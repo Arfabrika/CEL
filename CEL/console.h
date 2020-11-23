@@ -1,6 +1,6 @@
 /* FILE NAME: console.h
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 16.11.2020
+ * DATE: 23.11.2020
  * PERPOSE: work with console header file
  */
 
@@ -44,6 +44,13 @@ public:
          None.
     */
     static void MyError(string s);
+
+    /* Print helping text about program function
+       ARGUMENTS:
+         None;
+       RETURNS:
+          None. */
+    static void Help(void);
 
     /* Clear and refill console function
        ARGUMENTS:

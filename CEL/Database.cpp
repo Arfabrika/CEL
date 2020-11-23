@@ -1,19 +1,43 @@
-#include "Database.h"
-#include <fstream>
+/* FILE NAME: Database.cpp
+ * PROGRAMMER: Novikov Gordey
+ * DATE: 16.11.2020
+ * PERPOSE: database functions file
+ */
+
+#include "main_header.h"
+
 const char SEPORATOR = ',';
 
+/* Database class default constructor
+   ARGUMENTS:
+     None;
+   RETURNS:
+     None. */
 Database::Database()
 {
     wordfiledir = std::string("C:/Users/User/Documents/CEL/word");
     marksfiledir = std::string("C:/Users/User/Documents/CEL/stat");
-}
+} /* End of default 'Datadase' constructor */
 
+/* Database class constructor
+   ARGUMENTS:
+     - Name of file with words:
+        std::string word_file;
+     - Name of file with statistic:
+        std::string stat_file;
+   RETURNS:
+      None. */
 Database::Database(std::string word_file, std::string stat_file)
 {
     wordfiledir = word_file;
     marksfiledir = stat_file;
-}
+} /* End of 'Datadase' constructor */
 
+/* Load words function
+   ARGUMENTS:
+     None;
+   RETURNS:
+     None. */
 void Database::loadWords()
 {
 	std::ifstream in(wordfiledir);;
@@ -26,19 +50,24 @@ void Database::loadWords()
 			for (size_t i = 0; i < line.length(); i++)
 			{
 				if (line.at(i) == SEPORATOR) {
-					w.ru_word = buf;
+					w.Translate = buf;
                     buf.clear();
 				}
 				else
 					buf+=(line.at(i));
 			}
-			w.en_translate = buf;
+			w.Name = buf;
 			storage.push_back(w);
 		}
 	}
 	in.close();
-}
+} /* End of 'loadWords' function */
 
+/* Load statistic function
+   ARGUMENTS:
+     None;
+   RETURNS:
+     None. */
 void Database::loadMarks()
 {
     std::ifstream in(marksfiledir);
@@ -58,11 +87,11 @@ void Database::loadMarks()
 				if (line.at(i) == SEPORATOR) {
                     switch (counter) {
                     case 0:
-                        w.ru_word = buf;
+                        w.Translate = buf;
                         counter++;
                         break;
                     case 1:
-                        w.uses = std::stoi(buf);
+                        w.NumOfUses = std::stoi(buf);
                         counter++;
                         break;
                     }
@@ -71,7 +100,7 @@ void Database::loadMarks()
 				else
                     buf += (line.at(i));
 			}
-            w.wrong = std::stoi(buf);
+            w.NumOfWrongAnswers = std::stoi(buf);
             counter = 0;
             localStore.push_back(w);
 		}  
@@ -81,22 +110,28 @@ void Database::loadMarks()
     for(size_t i = 0; i < storage.size();i++){
         bool flag = 0;
         for(size_t j = 0; j < localStore.size();j++){
-            if(storage[i].ru_word == localStore[j].ru_word){
-                storage[i].uses = localStore[j].uses;
-                storage[i].wrong = localStore[j].wrong;
-                storage[i].errork = localStore[j].wrong/localStore[j].uses;
+            if(storage[i].Translate == localStore[j].Translate){
+                storage[i].NumOfUses = localStore[j].NumOfUses;
+                storage[i].NumOfWrongAnswers = localStore[j].NumOfWrongAnswers;
+                storage[i].ErrorKoef = localStore[j].NumOfWrongAnswers/localStore[j].NumOfUses;
                 flag = 1;
             }
         }
         if(!flag){
-            storage[i].uses = 0;
-            storage[i].wrong = 0;
-            storage[i].errork = 1;
+            storage[i].NumOfUses = 0;
+            storage[i].NumOfWrongAnswers = 0;
+            storage[i].ErrorKoef = 1;
         }
-    }
+    } /* End of 'loadWords' function */
 }
-
+/* Get array of words function
+   ARGUMENTS:
+     None;
+   RETURNS:
+     (StringVector) array of words */
 StringVector Database::getStorage()
 {
     return storage;
-}
+} /* End of 'loadWords' function */
+
+/* END OF 'Database.cpp' FILE */

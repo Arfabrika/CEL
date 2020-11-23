@@ -1,6 +1,6 @@
 /* FILE NAME: main_header.h
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 16.11.2020
+ * DATE: 23.11.2020
  * PERPOSE: main header project file
  */
 
@@ -19,11 +19,12 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <fstream>
 
 #include "console.h"
+#include "Database.h"
 
 using namespace std;
-
 
 typedef struct Word {
 	string Name;

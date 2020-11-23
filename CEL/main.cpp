@@ -1,6 +1,6 @@
 /* FILE NAME: main.cpp
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 16.11.2020
+ * DATE: 23.11.2020
  * PERPOSE: main project file
  */
 
@@ -74,6 +74,12 @@ int main( void )
             }
             break;
         case '4':
+            break;
+        case '5':
+            break;
+        case '9':
+            system("cls");
+            console::Help();
             break;
         default:
             printf("Ввведена некорректная программа. Пожалуйста, повторите ваш запрос\n\n");

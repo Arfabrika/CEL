@@ -21,12 +21,18 @@
     <ClCompile Include="console.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Database.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main_header.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="console.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Database.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
