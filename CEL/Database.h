@@ -1,6 +1,6 @@
 /* FILE NAME: Database.h
  * PROGRAMMER: Novikov Gordey
- * DATE: 23.11.2020
+ * DATE: 24.11.2020
  * PERPOSE: database header file
  */
 
@@ -58,6 +58,20 @@ public:
        RETURNS:
          None. */
     void loadMarks();
+
+    /* Save words into file function
+       ARGUMENTS:
+         None;
+       RETURNS:
+         None. */
+    void saveWords();
+
+    /* Save statistic into file function
+       ARGUMENTS:
+         None;
+       RETURNS:
+         None. */
+    void saveMarks();
 
     /* Get array of words function
        ARGUMENTS:
