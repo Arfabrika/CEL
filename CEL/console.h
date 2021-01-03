@@ -1,6 +1,6 @@
 /* FILE NAME: console.h
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 23.11.2020
+ * DATE: 21.12.2020
  * PERPOSE: work with console header file
  */
 
@@ -11,6 +11,7 @@
 using namespace std;
 
 struct Word;
+//int is_exit;
 
 /* class console */
 class console
@@ -57,7 +58,7 @@ public:
          None;
        RETURNS:
          None. */
-    static void ConsoleReset(void);
+    static void ConsoleResetWithMessage(string s);
 
     /* Read word function
        ARGUMENTS:
@@ -109,6 +110,22 @@ public:
          1 - if competed successfully, 0 - if error
     */
     static int ClearArray(vector<Word>* mas);
+
+    /* Training mode function
+       ARGUMENTS:
+         - Word *mas: pointer to trainig word array
+       RETURNS:
+         None.
+    */
+    static void TrainingMode(vector<Word>* mas);
+
+    /* Test mode function
+       ARGUMENTS:
+         - Word *mas: pointer to trainig word array
+       RETURNS:
+         None.
+    */
+    static void TestMode(vector<Word>* mas);
 
 }; /* end of 'console' class */
 

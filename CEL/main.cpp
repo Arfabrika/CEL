@@ -1,10 +1,12 @@
 /* FILE NAME: main.cpp
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 23.11.2020
+ * DATE: 21.12.2020
  * PERPOSE: main project file
  */
 
 #include "main_header.h"
+
+int is_exit;
 
 /* Main program function 
    ARGUMENTS:
@@ -20,9 +22,9 @@ int main( void )
     SetConsoleOutputCP(1251);
     while (1)
     {
-        int flag = 1;
         string s;
 
+        is_exit = 0;
         console::HeadText();
         console::Menu();
         switch (_getch())
@@ -35,15 +37,13 @@ int main( void )
             printf("Слово успешно добавлено в временный массив!\n");
             break;
         case '2':
-            break;
-        case '3':
             system("cls");
             console::HeadText();
             console::ArrayMenu();
             switch (_getch())
             {
             case '0':
-                flag = 0;
+                is_exit = 1;
                 system("cls");
                 break;
             case '1':
@@ -73,19 +73,29 @@ int main( void )
                 break;
             }
             break;
+        case '3':
+            system("cls");
+            console::TrainingMode(&WordArray);
+            break;
         case '4':
+            system("cls");
+            console::TestMode(&WordArray);
             break;
         case '5':
+            break;
+        case '6':
+            break;
+        case '7':
             break;
         case '9':
             system("cls");
             console::Help();
             break;
         default:
-            printf("Ввведена некорректная программа. Пожалуйста, повторите ваш запрос\n\n");
+            printf("Ввведена некорректная программа. Пожалуйста, повторите ваш запрос\n");
         }
-        if (flag)
-          console::ConsoleReset();
+        if (!is_exit)
+          console::ConsoleResetWithMessage("Для возвращения в главное меню нажмите любую кнопку");
     }
 } /* End of 'main' function */
 

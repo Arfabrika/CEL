@@ -1,6 +1,6 @@
 /* FILE NAME: main_header.h
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 23.11.2020
+ * DATE: 21.12.2020
  * PERPOSE: main header project file
  */
 
@@ -8,7 +8,7 @@
 #define __MAIN_HEADER_H
 
 #define _CRT_SECURE_NO_WARNINGS
-#define ConsoleResetTime 7000   /* in ms*/
+#define ConsoleResetWithMessageTime 7000   /* in ms*/
 #define MaxOutputWordSize 20    /* used in OutputArray */
 
 #include <cstdio>
@@ -20,19 +20,21 @@
 #include <vector>
 #include <iomanip>
 #include <fstream>
+#include <algorithm>
 
 #include "console.h"
 #include "Database.h"
 
 using namespace std;
 
+/* Word struct defenition */
 typedef struct Word {
 	string Name;
 	string Translate;
 	int NumOfUses = 0;
 	int NumOfWrongAnswers = 0;
 	double ErrorKoef = 0;
-};
+}; /* End of 'Word' struct */
 
 #endif /*__MAIN_HEADER_H*/
 /* END OF 'main_header.h' FILE */

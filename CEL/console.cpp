@@ -1,6 +1,6 @@
 /* FILE NAME: console.cpp
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 23.11.2020
+ * DATE: 21.12.2020
  * PERPOSE: console functions file
  */
 
@@ -13,12 +13,14 @@
       None. */
 void console::Menu(void)
 {
-    printf("0 - выход\n"
+    printf("Для выбора необходимого пункта меню нажмите на соответственную клавишу\n"
+        "0 - выход\n"
         "1 - ввести новое слово\n"
-        "2 - провести тест\n"
-        "3 - действия с временным списком слов\n"
-        "4 - сохранить список слов в файл\n"
-        "5 - загрузить список слов из файла\n"
+        "2 - действия с временным списком слов\n"
+        "3 - провести тренеровку\n"
+        "4 - провести тест\n"
+        "5 - сохранить список слов в файл\n"
+        "6 - загрузить список слов из файла\n"
         "9 - помощь/о программе\n");
 } /* End of 'Menu' function */
 
@@ -108,23 +110,23 @@ Word console::ReadWord(void)
      None;
    RETURNS:
      None. */
-void console::ConsoleReset(void)
+void console::ConsoleResetWithMessage( string s )
 {
-    printf("Для возвращения в главное меню нажмите любую кнопку\n");
+    cout << s << '\n';
     if (_getch())
     {
         system("cls");
         return;
     }
     /* Old variant with timer
-    printf("Возвращение в главное меню через %i", ConsoleResetTime / 1000);
-    for (int i = ConsoleResetTime - 1; i > 1000; i-= 1000)
+    printf("Возвращение в главное меню через %i", ConsoleResetWithMessageTime / 1000);
+    for (int i = ConsoleResetWithMessageTime - 1; i > 1000; i-= 1000)
     {
         printf(", %i", i / 1000);
         Sleep(1000);
     }
     system("cls");*/
-} /* End of 'ConsoleReset' function */
+} /* End of 'ConsoleResetWithMessage' function */
 
 /* Output array function
    ARGUMENTS:
@@ -141,11 +143,11 @@ void console::OutputArray(vector<Word>* mas)
         printf("Массив слов пуст!\n");
         return;
     }
-    cout << left << setw(MaxOutputWordSize) <<"Слово" << setw(MaxOutputWordSize) << "Перевод" << "Количество проверок слова  Количество ошибок в слове  " 
-        "Коэффициент правильных ответов слова\n";
+    cout << left << setw(MaxOutputWordSize) << "Слово" << setw(MaxOutputWordSize) << "Перевод" << "Количество проверок слова  Количество ошибок в слове  \n"
+        ;// "Коэффициент правильных ответов слова\n";
     for (int i = 0; i < mas->size(); i++)
         cout << setw(MaxOutputWordSize) << mas->at(i).Name << setw(MaxOutputWordSize) << mas->at(i).Translate
-        << setw(15) << " " << mas->at(i).NumOfUses << setw(20) << "    " << mas->at(i).NumOfWrongAnswers << setw(30) << "            " << mas->at(i).ErrorKoef << "\n";
+        << setw(15) << " " << mas->at(i).NumOfUses << setw(20) << "    " << mas->at(i).NumOfWrongAnswers << "\n";//<< setw(30) << "            " << mas->at(i).ErrorKoef << "\n";
 } /* End of 'OutputArray' function */
 
 /* Delete word from temporary array function
@@ -273,5 +275,115 @@ int console::ClearArray(vector<Word>* mas)
         mas->clear();
     return 1;
 } /*End of 'ClearArray' function */
+
+/* Training mode function
+   ARGUMENTS:
+     - Word *mas: pointer to trainig word array
+   RETURNS:
+     None.
+*/
+void console::TrainingMode(vector<Word>* mas)
+{
+    int i, is_wrong;
+    string UserTranslate;
+
+    if (mas->size() == 0)
+    {
+        console::MyError("Для начала тренеровки введите хотя бы одно слово");
+        return;
+    }
+
+    printf("Внимательно ознакомьтесь со следующими словами:\n");
+    for (i = 0; i < mas->size(); i++)
+        cout << left << setw(MaxOutputWordSize) << mas->at(i).Name << setw(MaxOutputWordSize) << mas->at(i).Translate << "\n";
+    ConsoleResetWithMessage("Для начала тренеровки нажмите любую кнопку");
+    for (i = 0; i < mas->size(); i++)
+    {
+        vector <int> help_indexes;
+        int current_help_index, is_help = 0;
+
+        is_wrong = 1;
+        while (is_wrong)
+        {
+            /* Help module */
+            if (is_help)
+            {
+                current_help_index = rand() % mas->at(i).Name.size();
+                help_indexes.push_back(current_help_index);
+                printf("Подсказка: ");
+                for (int j = 0; j < mas->at(i).Name.size(); j++)
+                {
+                    if (std::find(help_indexes.begin(), help_indexes.end(), j) == help_indexes.end())
+                        cout << "*";
+                    else
+                        cout << mas->at(i).Name.at(j);
+                }
+                cout << "\n";
+            }
+
+            cout << "Введите перевод слова " << mas->at(i).Translate << "\n";
+            cin >> UserTranslate;
+
+            transform(UserTranslate.begin(), UserTranslate.end(), UserTranslate.begin(), tolower);
+            transform(mas->at(i).Name.begin(), mas->at(i).Name.end(), mas->at(i).Name.begin(), tolower);
+            if (UserTranslate == mas->at(i).Name)       
+            {
+                printf("Верно!\n");
+                is_wrong = 0;
+            }
+            else
+            {
+                printf("К сожалению, неверно\n");
+                is_help = 1;
+                ConsoleResetWithMessage("\nДля новой попытки нажмите любую кнопку");
+            }
+        }
+        ConsoleResetWithMessage("Для перехода к следующему слову нажмите любую кнопку");
+    }
+} /* End of 'TrainingMode' function */
+
+/* Test mode function
+   ARGUMENTS:
+     - Word *mas: pointer to trainig word array
+   RETURNS:
+     None.
+*/
+void console::TestMode(vector<Word>* mas)
+{
+    int i, is_wrong;
+    string UserTranslate;
+
+    if (mas->size() == 0)
+    {
+        console::MyError("Для начала тестирования введите хотя бы одно слово");
+        return;
+    }
+
+    printf("Внимательно ознакомьтесь со следующими словами:\n");
+    for (i = 0; i < mas->size(); i++)
+        cout << left << setw(MaxOutputWordSize) << mas->at(i).Name << setw(MaxOutputWordSize) << mas->at(i).Translate << "\n";
+    printf("Нажмите клавишу 'd', если хотите удалить какое-либо слово\n"
+           "Нажмите клавишу '0', если хотите выйти в главное меню\n"
+           "Нажмите любую другую клавишу, если Вы готовы пройти тест\n");
+    switch (_getch())
+    {
+    case 'd':
+    case 'D':
+    case 'в':
+    case 'В':
+        printf("Введите слово, которое хотите удалить:");
+        cin >> UserTranslate;
+        console::DeleteWord(mas, UserTranslate);
+        console::TestMode(mas);
+        return;
+    case '0':
+        //is_exit = 1;
+        return;
+    default:
+        system("cls");
+        break;
+    }
+    printf("a");
+} /* End of 'TestMode' function */
 
 /* END OF 'console.cpp' FILE */
