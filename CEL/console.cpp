@@ -1,6 +1,6 @@
 /* FILE NAME: console.cpp
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 21.12.2020
+ * DATE: 05.01.2020
  * PERPOSE: console functions file
  */
 
@@ -10,7 +10,8 @@
    ARGUMENTS:
      None;
    RETURNS:
-      None. */
+      None.
+*/
 void console::Menu(void)
 {
     printf("Для выбора необходимого пункта меню нажмите на соответственную клавишу\n"
@@ -28,7 +29,8 @@ void console::Menu(void)
    ARGUMENTS:
      None;
    RETURNS:
-      None. */
+      None.
+*/
 void console::ArrayMenu(void)
 {
     printf("0 - возвращение в главное меню\n"
@@ -36,17 +38,15 @@ void console::ArrayMenu(void)
         "2 - удалить слово из временного массива\n"
         "3 - изменить перевод слова\n"
         "4 - сбросить прогресс слова\n"
-        "5 - удалить временный массив\n"
-        /*"2 - удалить слово из временного массива\n"
-        "2 - удалить слово из временного массива\n"
-        "2 - удалить слово из временного массива\n"*/);
+        "5 - удалить временный массив\n");
 } /* End of 'Menu' function */
 
 /* Print head text function
    ARGUMENTS:
      None;
    RETURNS:
-      None. */
+      None.
+*/
 void console::HeadText(void)
 {
     printf("Console English Learning, ver 1.00\n"
@@ -68,14 +68,15 @@ void console::MyError(string s)
    ARGUMENTS:
      None;
    RETURNS:
-      None. */
+      None.
+*/
 void console::Help(void)
 {
-    printf("Console English Learning - программа, помогающая в заучивании слов и других языков\n"
+    printf("Console English Learning - программа, помогающая в заучивании слов других языков\n"
         "Как ей пользоваться?\n"
         "Для начала нужно ввести определенное количество слов. Нажав кнопку '1' в главном меню, Вы перейдете в режим добавления слова.\n"
-        "Посмотреть уже введеннные слова можно, нажав кнопку '3' в главном меню, а затем нажав кнопку '1' в вспомогательном меню. В том же меню можно удалить слово из списка или изменить его перевод.\n"
-        "Чтобы проверить себя, Вы можете пройти тест, нажав кнопку '2' в главном меню.\n"
+        "Посмотреть уже введеннные слова можно, нажав кнопку '2' в главном меню, а затем нажав кнопку '1' в вспомогательном меню. В том же меню можно удалить слово из списка или изменить его перевод.\n"
+        "Для более успешного запоминания слов Вы можете пройти тренеровку, нажав кнопку '3' в главном меню.\n"
         "Не забывайте сохранять слова в файл! В противном случае, после выхода из программы список слов будет потерян. Для сохранения списка слов в файл нажмите кнопку '4' в главном меню.\n"
         "Хотите вернуться к старым словам? Загрузите слова из файла, нажав кнопку '5' в главном менюю\n"
         "Успехов в обучении!\n");
@@ -83,15 +84,15 @@ void console::Help(void)
 
 /* Read word function
    ARGUMENTS:
-     None;
+     - Word *mas: pointer to word array;
    RETURNS:
-     (Word) - new world structure */
-Word console::ReadWord(void)
+     (int) - 1 if successed, 0 if failed
+*/
+int console::ReadWord( vector<Word>* mas )
 {
     Word W;
     string s;
 
-    system("cls");
     HeadText();
     printf("Введите слово:\n");
     getline(cin, s);
@@ -99,17 +100,29 @@ Word console::ReadWord(void)
     printf("Введите перевод:\n");
     getline(cin, s);
     W.Translate = s;
+
+    for (int i = 0; i < mas->size(); i++)
+    {
+      if (W.Name == mas->at(i).Name && W.Translate == mas->at(i).Translate)
+      {
+        MyError("Вводимое слово уже есть в массиве.");
+        return 0;
+      }
+    }
+
     W.NumOfUses = 0;
     W.NumOfWrongAnswers = 0;
     W.ErrorKoef = 0;
-    return W;
+    mas->push_back(W);
+    return 1;
 } /* End of 'ReadWord' function */
 
 /* Clear and refill console function
    ARGUMENTS:
      None;
    RETURNS:
-     None. */
+     None.
+*/
 void console::ConsoleResetWithMessage( string s )
 {
     cout << s << '\n';
@@ -136,7 +149,6 @@ void console::ConsoleResetWithMessage( string s )
 */
 void console::OutputArray(vector<Word>* mas) 
 {
-    system("cls");
     HeadText();
     if (mas->size() == 0)
     {
@@ -270,10 +282,19 @@ int console::ClearArray(vector<Word>* mas)
     if (mas->size() == 0)
         return 0;
     printf("Вы действительно хотите очистить временный массив? Данные в нем нельзя будет восстановить\n"
-    "Для подтверждения операции нажмите клавишу Y\n");
-    if (_getch() == 'y' || _getch() == 'Y' || _getch() == 'н' || _getch() == 'Н')
-        mas->clear();
-    return 1;
+    "Для подтверждения операции нажмите клавишу Y\n"
+    "Для выхода в главное меню нажмите любую другую кнопку\n");
+    switch(_getch())
+    {
+    case 'y':
+    case 'Y':
+    case 'н':
+    case 'Н':
+      mas->clear();
+      return 1;
+    default:
+      return 0;
+    }
 } /*End of 'ClearArray' function */
 
 /* Training mode function
@@ -284,7 +305,7 @@ int console::ClearArray(vector<Word>* mas)
 */
 void console::TrainingMode(vector<Word>* mas)
 {
-    int i, is_wrong;
+    int i, is_wrong, Right = 0;
     string UserTranslate;
 
     if (mas->size() == 0)
@@ -293,6 +314,7 @@ void console::TrainingMode(vector<Word>* mas)
         return;
     }
 
+    console::HeadText();
     printf("Внимательно ознакомьтесь со следующими словами:\n");
     for (i = 0; i < mas->size(); i++)
         cout << left << setw(MaxOutputWordSize) << mas->at(i).Name << setw(MaxOutputWordSize) << mas->at(i).Translate << "\n";
@@ -302,6 +324,7 @@ void console::TrainingMode(vector<Word>* mas)
         vector <int> help_indexes;
         int current_help_index, is_help = 0;
 
+        console::HeadText();
         is_wrong = 1;
         while (is_wrong)
         {
@@ -326,7 +349,7 @@ void console::TrainingMode(vector<Word>* mas)
 
             transform(UserTranslate.begin(), UserTranslate.end(), UserTranslate.begin(), tolower);
             transform(mas->at(i).Name.begin(), mas->at(i).Name.end(), mas->at(i).Name.begin(), tolower);
-            if (UserTranslate == mas->at(i).Name)       
+            if (UserTranslate == mas->at(i).Name)
             {
                 printf("Верно!\n");
                 is_wrong = 0;
@@ -336,31 +359,51 @@ void console::TrainingMode(vector<Word>* mas)
                 printf("К сожалению, неверно\n");
                 is_help = 1;
                 ConsoleResetWithMessage("\nДля новой попытки нажмите любую кнопку");
+                console::HeadText();
             }
         }
+        if (!is_help)
+          Right++;
         ConsoleResetWithMessage("Для перехода к следующему слову нажмите любую кнопку");
     }
+    console::HeadText();
+    printf("Поздравляем!\nВы верно перевели %i слов из %i с первой попытки!\n", Right, mas->size());
 } /* End of 'TrainingMode' function */
 
-/* Test mode function
+/* Print head in test function
+   ARGUMENTS:
+     - int: cuurent word position;
+     - int: number of all answers;
+   RETURNS:
+     None.
+*/
+void TestHead(int cur, int all)
+{
+  printf("\n---------%i/%i----------\n", cur, all);
+} /* End of 'ShowResults' function */
+
+/* Exam mode function
    ARGUMENTS:
      - Word *mas: pointer to trainig word array
    RETURNS:
      None.
 */
-void console::TestMode(vector<Word>* mas)
+void console::ExamMode(vector<Word>* mas)
 {
-    int i, is_wrong;
+    int i, Right = 0, ArraySize = (int)mas->size();
     string UserTranslate;
+    vector <int> ErrorIndexes;
 
-    if (mas->size() == 0)
+    if (ArraySize == 0)
     {
         console::MyError("Для начала тестирования введите хотя бы одно слово");
         return;
     }
 
+    /* Menu before test */
+    console::HeadText();
     printf("Внимательно ознакомьтесь со следующими словами:\n");
-    for (i = 0; i < mas->size(); i++)
+    for (i = 0; i < ArraySize; i++)
         cout << left << setw(MaxOutputWordSize) << mas->at(i).Name << setw(MaxOutputWordSize) << mas->at(i).Translate << "\n";
     printf("Нажмите клавишу 'd', если хотите удалить какое-либо слово\n"
            "Нажмите клавишу '0', если хотите выйти в главное меню\n"
@@ -374,16 +417,59 @@ void console::TestMode(vector<Word>* mas)
         printf("Введите слово, которое хотите удалить:");
         cin >> UserTranslate;
         console::DeleteWord(mas, UserTranslate);
-        console::TestMode(mas);
+        system("cls");
+        console::ExamMode(mas);
         return;
     case '0':
-        //is_exit = 1;
+        is_exit = 1;
+        system("cls");
         return;
     default:
         system("cls");
         break;
     }
-    printf("a");
-} /* End of 'TestMode' function */
+
+    /* Testing words */
+    for (i = 0; i < ArraySize; i++)
+    {
+      console::HeadText();
+      TestHead(i + 1, ArraySize);
+      cout << "Введите перевод слова " << mas->at(i).Name << ":\n";
+      cin >> UserTranslate;
+
+      mas->at(i).NumOfUses++;
+      if (UserTranslate == mas->at(i).Name) 
+      {
+        printf("Верно\n");
+        Right++;
+      }
+      else
+      {
+        printf("Неверно\n");
+        mas->at(i).NumOfWrongAnswers++;
+        mas->at(i).ErrorKoef = mas->at(i).NumOfWrongAnswers / mas->at(i).NumOfUses;
+        ErrorIndexes.push_back(i);
+      }
+      printf("Для перехода к следующему слову нажмите любую кнопку\n");
+      if (_getch())
+        system("cls");
+    }
+    console::HeadText();
+    if (Right == ArraySize)
+      printf("Отлично\n");
+    else if (Right >= 0.8 * ArraySize)
+      printf("Хорошо\n");
+    else if (Right >= 0.6 * ArraySize)
+      printf("Нормально\n");
+    else
+      printf("Плохо\n");
+    printf("Вы прошли тест и правильно перевели %i слов из %i \n", Right, ArraySize);
+    if (Right != ArraySize)
+    {
+      printf("Список слов, в которых Вы сделали ошибки:\n");
+      for (i = 0; i < ErrorIndexes.size(); i++)
+        cout << left << setw(MaxOutputWordSize) << mas->at(i).Name << setw(MaxOutputWordSize) << mas->at(i).Translate << "\n";
+    }
+} /* End of 'ExamMode' function */
 
 /* END OF 'console.cpp' FILE */

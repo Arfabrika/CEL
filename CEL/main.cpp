@@ -1,6 +1,6 @@
 /* FILE NAME: main.cpp
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 21.12.2020
+ * DATE: 05.01.2020
  * PERPOSE: main project file
  */
 
@@ -12,7 +12,8 @@ int is_exit;
    ARGUMENTS:
      None;
    RETURNS:
-      - 1 if all okey, 0 if error.*/
+      - 1 if all okey, 0 if error.
+*/
 int main( void )
 {
     vector<Word> WordArray;
@@ -32,9 +33,9 @@ int main( void )
         case '0':
             return 1;
         case '1':
-            W = console::ReadWord();
-            WordArray.push_back(W);
-            printf("Слово успешно добавлено в временный массив!\n");
+              system("cls");
+            if (console::ReadWord(&WordArray))
+              printf("Слово успешно добавлено в временный массив!\n");
             break;
         case '2':
             system("cls");
@@ -47,21 +48,28 @@ int main( void )
                 system("cls");
                 break;
             case '1':
+                system("cls");
                 console::OutputArray(&WordArray);
                 break;
             case '2':
+                system("cls");
+                console::HeadText();
                 printf("Введите слово, которое собираетесь удалить:\n");
                 cin >> s;
                 if (console::DeleteWord(&WordArray, s))
                     cout << "Слово " << s << " успешно удалено!\n";
                 break;
             case '3':
+                system("cls");
+                console::HeadText();
                 printf("Введите слово, перевод которого собираетесь изменить:\n");
                 cin >> s;
                 if (console::EditWord(&WordArray, s))
                     cout << "Перевод слова " << s << " успешно изменен!\n";
                 break;
             case '4':
+                system("cls");
+                console::HeadText();
                 printf("Введите слово, прогресс которого собираетесь сбросить:\n");
                 cin >> s;
                 if (console::ResetProgress(&WordArray, s))
@@ -70,6 +78,11 @@ int main( void )
             case '5':
                 if (console::ClearArray(&WordArray))
                     cout << "Временный массив успешно очищен!\n";
+                else
+                {
+                  is_exit = 1;
+                  system("cls");
+                }
                 break;
             }
             break;
@@ -79,7 +92,7 @@ int main( void )
             break;
         case '4':
             system("cls");
-            console::TestMode(&WordArray);
+            console::ExamMode(&WordArray);
             break;
         case '5':
             break;

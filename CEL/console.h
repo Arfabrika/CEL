@@ -1,6 +1,6 @@
 /* FILE NAME: console.h
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 21.12.2020
+ * DATE: 05.01.2020
  * PERPOSE: work with console header file
  */
 
@@ -11,7 +11,6 @@
 using namespace std;
 
 struct Word;
-//int is_exit;
 
 /* class console */
 class console
@@ -21,21 +20,24 @@ public:
        ARGUMENTS:
          None;
        RETURNS:
-          None. */
+          None.
+    */
     static void Menu(void);
 
     /* Print menu of temporary array function
        ARGUMENTS:
          None;
        RETURNS:
-          None. */
+          None.
+    */
     static void ArrayMenu(void);
 
     /* Print head text function
        ARGUMENTS:
          None;
        RETURNS:
-          None. */
+          None.
+    */
     static void HeadText(void);
 
     /* Throw error message function
@@ -50,23 +52,25 @@ public:
        ARGUMENTS:
          None;
        RETURNS:
-          None. */
+          None.
+    */
     static void Help(void);
 
     /* Clear and refill console function
        ARGUMENTS:
          None;
        RETURNS:
-         None. */
+         None.
+    */
     static void ConsoleResetWithMessage(string s);
 
     /* Read word function
-       ARGUMENTS:
-         None;
-       RETURNS:
-          (Word) created from input data word.
+    ARGUMENTS:
+      - Word *mas: pointer to word array;
+    RETURNS:
+      (int) - 1 if successed, 0 if failed
     */
-    static Word ReadWord(void);
+    static int ReadWord( std::vector<Word>* mas );
 
     /* Output array function
        ARGUMENTS:
@@ -119,18 +123,15 @@ public:
     */
     static void TrainingMode(vector<Word>* mas);
 
-    /* Test mode function
+    /* Exam mode function
        ARGUMENTS:
          - Word *mas: pointer to trainig word array
        RETURNS:
          None.
     */
-    static void TestMode(vector<Word>* mas);
+    static void ExamMode(vector<Word>* mas);
 
 }; /* end of 'console' class */
 
 #endif /*__CONSOLE_H*/
 /* END OF 'console.h' FILE */
-
-
-

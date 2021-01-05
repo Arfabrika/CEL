@@ -1,6 +1,6 @@
 /* FILE NAME: main_header.h
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 21.12.2020
+ * DATE: 04.01.2020
  * PERPOSE: main header project file
  */
 
@@ -26,6 +26,8 @@
 #include "Database.h"
 
 using namespace std;
+
+extern int is_exit;     // exit variable
 
 /* Word struct defenition */
 typedef struct Word {
