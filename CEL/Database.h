@@ -1,6 +1,6 @@
 /* FILE NAME: Database.h
  * PROGRAMMER: Novikov Gordey
- * DATE: 24.11.2020
+ * DATE: 23.11.2020
  * PERPOSE: database header file
  */
 
@@ -13,11 +13,14 @@
 #include "main_header.h"
 
 /* Word array defenition */
+struct Word;
+
 typedef std::vector <Word> StringVector;
 
 class Database
 {
 	StringVector storage;
+    std::string installdir;
 	std::string wordfiledir;
 	std::string marksfiledir;
 public:
@@ -58,21 +61,8 @@ public:
        RETURNS:
          None. */
     void loadMarks();
-
-    /* Save words into file function
-       ARGUMENTS:
-         None;
-       RETURNS:
-         None. */
-    void saveWords();
-
-    /* Save statistic into file function
-       ARGUMENTS:
-         None;
-       RETURNS:
-         None. */
-    void saveMarks();
-
+	
+	void save();
     /* Get array of words function
        ARGUMENTS:
          None;
@@ -81,9 +71,8 @@ public:
     StringVector getStorage();
 
     //Не сделано
-	void sortbyalphobet();
-	void sortbyalphobet(char start,char end);
-	void sortbyalphobet(char start, char end,bool reverse);
+    StringVector getWords(int count);
+
 };
 
 #endif /*__DATABASE_H*/
