@@ -1,10 +1,36 @@
 /* FILE NAME: console.cpp
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 05.01.2020
+ * DATE: 08.01.2020
  * PERPOSE: console functions file
  */
 
 #include "main_header.h"
+
+console cons;
+
+/* Upgraded random function
+   ARGUMENTS:
+     - int mi: minimum random number;
+     - int ma: maximum random number;
+     - int param: random parameter
+   RETURNS:
+     (int) random number.
+*/
+int MyRand(int mi, int ma, int param )
+{
+  int num;
+
+  if (mi == 0)
+    mi = 1;
+  if (ma == 0)
+    ma = 1;
+  if (param == 0)
+    param = rand() % 5648 + 19;
+  num = (((mi * ma + ma / param) / mi) * cons.RandomTime + (rand() % param) * param) % ma;
+  if (num < mi)
+    num = MyRand(mi, ma, param * rand() % 256);
+  return num;
+} /* End of 'MyRand' function */
 
 /* Print menu function
    ARGUMENTS:
@@ -19,9 +45,10 @@ void console::Menu(void)
         "1 - ввести новое слово\n"
         "2 - действия с временным списком слов\n"
         "3 - провести тренеровку\n"
-        "4 - провести тест\n"
-        "5 - сохранить список слов в файл\n"
-        "6 - загрузить список слов из файла\n"
+        "4 - провести экзамен\n"
+        "5 - провести тест\n"
+        "6 - сохранить список слов в файл\n"
+        "7 - загрузить список слов из файла\n"
         "9 - помощь/о программе\n");
 } /* End of 'Menu' function */
 
@@ -299,7 +326,7 @@ int console::ClearArray(vector<Word>* mas)
 
 /* Training mode function
    ARGUMENTS:
-     - Word *mas: pointer to trainig word array
+     - Word *mas: pointer to training word array
    RETURNS:
      None.
 */
@@ -384,7 +411,7 @@ void TestHead(int cur, int all)
 
 /* Exam mode function
    ARGUMENTS:
-     - Word *mas: pointer to trainig word array
+     - Word *mas: pointer to checking word array
    RETURNS:
      None.
 */
@@ -421,7 +448,7 @@ void console::ExamMode(vector<Word>* mas)
         console::ExamMode(mas);
         return;
     case '0':
-        is_exit = 1;
+        cons.is_exit = 1;
         system("cls");
         return;
     default:
@@ -454,6 +481,164 @@ void console::ExamMode(vector<Word>* mas)
       if (_getch())
         system("cls");
     }
+    console::HeadText();
+    if (Right == ArraySize)
+      printf("Отлично\n");
+    else if (Right >= 0.8 * ArraySize)
+      printf("Хорошо\n");
+    else if (Right >= 0.6 * ArraySize)
+      printf("Нормально\n");
+    else
+      printf("Плохо\n");
+    printf("Вы прошли тест и правильно перевели %i слов из %i \n", Right, ArraySize);
+    if (Right != ArraySize)
+    {
+      printf("Список слов, в которых Вы сделали ошибки:\n");
+      for (i = 0; i < ErrorIndexes.size(); i++)
+        cout << left << setw(MaxOutputWordSize) << mas->at(i).Name << setw(MaxOutputWordSize) << mas->at(i).Translate << "\n";
+    }
+} /* End of 'ExamMode' function */
+
+/* Test mode function
+   ARGUMENTS:
+     - Word *mas: pointer to testing word array
+   RETURNS:
+     None.
+*/
+void console::TestMode(vector<Word>* mas)
+{
+    int i, Right = 0, ArraySize = (int)mas->size(), random, cnt;
+    string tmpstr;
+    vector <int> ErrorIndexes;
+
+    if (ArraySize == 0)
+    {
+        console::MyError("Для начала тестирования введите хотя бы одно слово.");
+        return;
+    }
+    if (ArraySize < 4)
+    {
+        console::MyError("Для создания теста необходимо минимум 4 слова.");
+        return;
+    }
+
+    /* Menu before test */
+    console::HeadText();
+    printf("Внимательно ознакомьтесь со следующими словами:\n");
+    for (i = 0; i < ArraySize; i++)
+        cout << left << setw(MaxOutputWordSize) << mas->at(i).Name << setw(MaxOutputWordSize) << mas->at(i).Translate << "\n";
+    printf("Нажмите клавишу 'd', если хотите удалить какое-либо слово\n"
+           "Нажмите клавишу '0', если хотите выйти в главное меню\n"
+           "Нажмите любую другую клавишу, если Вы готовы пройти тест\n");
+    switch (_getch())
+    {
+    case 'd':
+    case 'D':
+    case 'в':
+    case 'В':
+        printf("Введите слово, которое хотите удалить:");
+        cin >> tmpstr;
+        console::DeleteWord(mas, tmpstr);
+        system("cls");
+        console::ExamMode(mas);
+        return;
+    case '0':
+        cons.is_exit = 1;
+        system("cls");
+        return;
+    default:
+        system("cls");
+        break;
+    }
+
+    /* Testing words */
+    for (i = 0; i < ArraySize; i++)
+    {
+      console::HeadText();
+      TestHead(i + 1, ArraySize);
+      cout << "Выберите правильный перевод слова " << mas->at(i).Name << ":\n";
+      printf("Вводите номер правильного перевода\n");
+
+      /* Creating test */
+      string Answer = mas->at(i).Translate;
+      vector <string> Variants;
+      vector <int> TestIndexes;
+      int AnswerIndex, UserAnswer;
+
+      cnt = 0;
+      cons.RandomTime = clock();
+      for (int j = 0; j < 4; j++)
+      {
+        Variants.push_back("empty");
+        TestIndexes.push_back(8);
+      }
+
+      // Make normal random
+      // ************
+      // ************
+      // ************
+
+      srand((int)ArraySize * i * 10 + Right * 5);
+      random = MyRand(0, 4, Right + rand() + ArraySize);
+      Variants.at(random) = Answer;
+      AnswerIndex = random;
+      TestIndexes.at(cnt) = random;
+      cnt++;
+
+      for (int j = 0; j < 3; j++)
+      {
+        string Wrong;
+        int flag = 1;
+
+        random = rand() % ArraySize;
+        while (flag)
+        {
+          if (mas->at(random).Translate == Variants[0] || mas->at(random).Translate == Variants[1] ||
+              mas->at(random).Translate == Variants[2] || mas->at(random).Translate == Variants[3] || mas->at(random).Translate == Answer)
+            random = MyRand(0, ArraySize, Right * rand() + i + rand());
+          else
+            flag = 0;
+        }
+        flag = 1;
+        Wrong = mas->at(random).Translate;
+
+        random = MyRand(0, 4, Right * rand() + i + rand() * random);
+        while (flag)
+        {
+          if (TestIndexes.at(0) == random || TestIndexes.at(1) == random || TestIndexes.at(2) == random || TestIndexes.at(3) == random)
+            random = rand() % 4;
+          else
+            flag = 0;
+        }
+        Variants.at(random) = Wrong;
+        TestIndexes.at(cnt) = random;
+        cnt++;
+      }
+      for (int j = 0; j < 4; j++)
+        cout << j + 1 << ") " << Variants.at(j) << "\n";
+
+      cin >> UserAnswer;
+
+      cons.RandomTime = clock() - cons.RandomTime;
+      mas->at(i).NumOfUses++;
+      if (UserAnswer - 1 == AnswerIndex)
+      {
+        printf("Верно\n");
+        Right++;
+      }
+      else
+      {
+        printf("Неверно\n");
+        mas->at(i).NumOfWrongAnswers++;
+        mas->at(i).ErrorKoef = mas->at(i).NumOfWrongAnswers / mas->at(i).NumOfUses;
+        ErrorIndexes.push_back(i);
+      }
+      printf("Для перехода к следующему слову нажмите любую кнопку\n");
+      if (_getch())
+        system("cls");
+    }
+
+    /* Finish menu */
     console::HeadText();
     if (Right == ArraySize)
       printf("Отлично\n");

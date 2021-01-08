@@ -1,12 +1,10 @@
 /* FILE NAME: main.cpp
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 05.01.2020
+ * DATE: 08.01.2020
  * PERPOSE: main project file
  */
 
 #include "main_header.h"
-
-int is_exit;
 
 /* Main program function 
    ARGUMENTS:
@@ -17,7 +15,6 @@ int is_exit;
 int main( void )
 {
     vector<Word> WordArray;
-    Word W;
 
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
@@ -25,62 +22,62 @@ int main( void )
     {
         string s;
 
-        is_exit = 0;
-        console::HeadText();
-        console::Menu();
+        cons.is_exit = 0;
+        cons.HeadText();
+        cons.Menu();
         switch (_getch())
         {
         case '0':
             return 1;
         case '1':
               system("cls");
-            if (console::ReadWord(&WordArray))
+            if (cons.ReadWord(&WordArray))
               printf("Слово успешно добавлено в временный массив!\n");
             break;
         case '2':
             system("cls");
-            console::HeadText();
-            console::ArrayMenu();
+            cons.HeadText();
+            cons.ArrayMenu();
             switch (_getch())
             {
             case '0':
-                is_exit = 1;
+                cons.is_exit = 1;
                 system("cls");
                 break;
             case '1':
                 system("cls");
-                console::OutputArray(&WordArray);
+                cons.OutputArray(&WordArray);
                 break;
             case '2':
                 system("cls");
-                console::HeadText();
+                cons.HeadText();
                 printf("Введите слово, которое собираетесь удалить:\n");
                 cin >> s;
-                if (console::DeleteWord(&WordArray, s))
+                if (cons.DeleteWord(&WordArray, s))
                     cout << "Слово " << s << " успешно удалено!\n";
                 break;
             case '3':
                 system("cls");
-                console::HeadText();
+                cons.HeadText();
                 printf("Введите слово, перевод которого собираетесь изменить:\n");
                 cin >> s;
-                if (console::EditWord(&WordArray, s))
+                if (cons.EditWord(&WordArray, s))
                     cout << "Перевод слова " << s << " успешно изменен!\n";
                 break;
             case '4':
                 system("cls");
-                console::HeadText();
+                cons.HeadText();
                 printf("Введите слово, прогресс которого собираетесь сбросить:\n");
                 cin >> s;
-                if (console::ResetProgress(&WordArray, s))
+                if (cons.ResetProgress(&WordArray, s))
                     cout << "Прогресс слова """ << s << """ успешно сброшен!\n";
                 break;
             case '5':
-                if (console::ClearArray(&WordArray))
+                if (cons.ClearArray(&WordArray))
                     cout << "Временный массив успешно очищен!\n";
                 else
                 {
-                  is_exit = 1;
+                  cons.is_exit = 1;
                   system("cls");
                 }
                 break;
@@ -88,13 +85,15 @@ int main( void )
             break;
         case '3':
             system("cls");
-            console::TrainingMode(&WordArray);
+            cons.TrainingMode(&WordArray);
             break;
         case '4':
             system("cls");
-            console::ExamMode(&WordArray);
+            cons.ExamMode(&WordArray);
             break;
         case '5':
+            system("cls");
+            cons.TestMode(&WordArray);
             break;
         case '6':
             break;
@@ -102,13 +101,13 @@ int main( void )
             break;
         case '9':
             system("cls");
-            console::Help();
+            cons.Help();
             break;
         default:
             printf("Ввведена некорректная программа. Пожалуйста, повторите ваш запрос\n");
         }
-        if (!is_exit)
-          console::ConsoleResetWithMessage("Для возвращения в главное меню нажмите любую кнопку");
+        if (!cons.is_exit)
+          cons.ConsoleResetWithMessage("Для возвращения в главное меню нажмите любую кнопку");
     }
 } /* End of 'main' function */
 

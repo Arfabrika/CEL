@@ -1,6 +1,6 @@
 /* FILE NAME: console.h
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 05.01.2020
+ * DATE: 08.01.2020
  * PERPOSE: work with console header file
  */
 
@@ -16,6 +16,9 @@ struct Word;
 class console
 {
 public:
+  int RandomTime; /* Time for random functions */
+  int is_exit;    /* Variable for exit */
+
     /* Print menu function
        ARGUMENTS:
          None;
@@ -130,6 +133,14 @@ public:
          None.
     */
     static void ExamMode(vector<Word>* mas);
+
+   /* Test mode function
+   ARGUMENTS:
+     - Word *mas: pointer to testing word array
+   RETURNS:
+     None.
+   */
+   static void TestMode(vector<Word>* mas);
 
 }; /* end of 'console' class */
 
