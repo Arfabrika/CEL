@@ -5,8 +5,11 @@
  */
 
 #include "main_header.h"
+#include <map>
 
 const char SEPORATOR = ',';
+const double ERROR_AFFECT = 3.0;
+const double RANDOM_AFFECT = 0.01;
 
 /* Database class default constructor
    ARGUMENTS:
@@ -15,8 +18,8 @@ const char SEPORATOR = ',';
      None. */
 Database::Database()
 {
-    wordfiledir = std::string("C:/Users/User/Documents/CEL/word");
-    marksfiledir = std::string("C:/Users/User/Documents/CEL/stat");
+    wordfiledir = std::string("words.txt");
+    marksfiledir = std::string("mark.txt");
 } /* End of default 'Datadase' constructor */
 
 /* Database class constructor
@@ -40,7 +43,13 @@ Database::Database(std::string word_file, std::string stat_file)
      None. */
 void Database::loadWords()
 {
-	std::ifstream in(wordfiledir);;
+	std::ifstream in(wordfiledir);
+    if (!in)
+    {
+        // то выводим следующее сообщение об ошибке и выполняем функцию exit()
+        cerr << "Uh oh, words.txt could not be opened for reading!" << endl;
+        exit(1);
+    }
 	std::string line;
 	if (in.is_open()) {
 		while (getline(in, line))
@@ -50,13 +59,13 @@ void Database::loadWords()
 			for (size_t i = 0; i < line.length(); i++)
 			{
 				if (line.at(i) == SEPORATOR) {
-					w.Translate = buf;
+					w.Name = buf;
                     buf.clear();
 				}
 				else
 					buf+=(line.at(i));
 			}
-			w.Name = buf;
+			w.Translate = buf;
 			storage.push_back(w);
 		}
 	}
@@ -113,7 +122,7 @@ void Database::loadMarks()
             if(storage[i].Translate == localStore[j].Translate){
                 storage[i].NumOfUses = localStore[j].NumOfUses;
                 storage[i].NumOfWrongAnswers = localStore[j].NumOfWrongAnswers;
-                storage[i].ErrorKoef = localStore[j].NumOfWrongAnswers/localStore[j].NumOfUses;
+                storage[i].ErrorKoef = storage[i].NumOfUses != 0? localStore[j].NumOfWrongAnswers / localStore[j].NumOfUses : 1;
                 flag = 1;
             }
         }
@@ -132,6 +141,51 @@ void Database::loadMarks()
 StringVector Database::getStorage()
 {
     return storage;
+}
+/*Take Word
+  ARGUMENTS:
+    (int) count of reqested words;
+  RETURNS:
+    (vector <Word>) vector of reqwested words;
+ * */
+vector<Word> Database::getWords(int count)
+{
+    map <int, Word> ans;
+    for(size_t t = 0;t < storage.size();t++){
+        const auto c = storage[t].ErrorKoef*ERROR_AFFECT + (rand() % 100)*RANDOM_AFFECT;
+        ans.insert(pair<int,Word>(c,storage[t]));
+    }
+    vector <Word> _ans;
+    for (auto i = 0; i < count; i++){
+        _ans.push_back(ans[i]);
+    }
+    return _ans;
+
 } /* End of 'loadWords' function */
+
+
+/*Saving statistic and wordlist to files
+  ARGUMENTS:
+    None;
+  RETURNS:
+    None;
+ * */
+void Database::save(){
+	std::ofstream out(marksfiledir);
+	for(size_t i = 0; i < storage.size();i++){
+        out << storage[i].Translate << SEPORATOR;
+        out << storage[i].NumOfUses << SEPORATOR;
+        out << storage[i].NumOfWrongAnswers;
+        out << std::endl;
+    };
+    out.close();
+    out.open(wordfiledir);
+    for(size_t i = 0; i < storage.size();i++){
+        out << storage[i].Name << SEPORATOR;
+        out << storage[i].Translate;
+        out << std::endl;
+    };
+    out.close();
+}/* End of 'save' function */
 
 /* END OF 'Database.cpp' FILE */
