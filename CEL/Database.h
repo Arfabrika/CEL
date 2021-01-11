@@ -1,14 +1,11 @@
 /* FILE NAME: Database.h
  * PROGRAMMER: Novikov Gordey
- * DATE: 23.11.2020
+ * DATE: 10.01.2021
  * PERPOSE: database header file
  */
 
 #ifndef __DATABASE_H
 #define __DATABASE_H
-
-//#include <string>
-//#include <vector>
 
 #include "main_header.h"
 
@@ -19,11 +16,13 @@ typedef std::vector <Word> StringVector;
 
 class Database
 {
-	StringVector storage;
-    std::string installdir;
-	std::string wordfiledir;
-	std::string marksfiledir;
+	
+  std::string installdir;
+	
 public:
+    StringVector storage;     /* Word array */
+    std::string wordfiledir;  /* File name with words */
+	  std::string marksfiledir; /* File name with statistic */
     /* Database class default constructor
        ARGUMENTS:
          None;

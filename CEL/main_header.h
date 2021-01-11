@@ -1,6 +1,6 @@
 /* FILE NAME: main_header.h
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 08.01.2020
+ * DATE: 10.01.2020
  * PERPOSE: main header project file
  */
 
@@ -28,7 +28,8 @@
 
 using namespace std;
 
-extern console cons; /* console object */
+extern console *cons; /* console object */
+extern Database *db;  /* database object */
 
 /* Word struct defenition */
 typedef struct Word {
@@ -37,7 +38,7 @@ typedef struct Word {
 	int NumOfUses = 0;
 	int NumOfWrongAnswers = 0;
 	double ErrorKoef = 0;
-}; /* End of 'Word' struct */
+} Word; /* End of 'Word' struct */
 
 #endif /*__MAIN_HEADER_H*/
 

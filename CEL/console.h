@@ -1,11 +1,12 @@
 /* FILE NAME: console.h
  * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 08.01.2020
+ * DATE: 10.01.2020
  * PERPOSE: work with console header file
  */
 
 #ifndef __CONSOLE_H
 #define __CONSOLE_H
+
 #include "main_header.h"
 
 using namespace std;
@@ -15,17 +16,37 @@ struct Word;
 /* class console */
 class console
 {
+  
 public:
-  int RandomTime; /* Time for random functions */
-  int is_exit;    /* Variable for exit */
+    int RandomTime;   /* Time for random functions */
+    int is_exit;      /* Variable for exit */
+    vector<Word> mas; /* Word array */
+
+    /* Console class default constructor
+       ARGUMENTS:
+         None;
+       RETURNS:
+         None.
+    */
+    console();
+
+    /* Console class default constructor
+       ARGUMENTS:
+         - int time: time for random functions;
+         - int myexit: need to exit in main menu;
+         - StringVector ma: word array;
+       RETURNS:
+         None.
+    */
+    console( int time, int myexit, vector<Word> ma );
 
     /* Print menu function
        ARGUMENTS:
          None;
        RETURNS:
-          None.
+         None.
     */
-    static void Menu(void);
+     void Menu( void );
 
     /* Print menu of temporary array function
        ARGUMENTS:
@@ -33,7 +54,7 @@ public:
        RETURNS:
           None.
     */
-    static void ArrayMenu(void);
+     void ArrayMenu( void );
 
     /* Print head text function
        ARGUMENTS:
@@ -41,90 +62,87 @@ public:
        RETURNS:
           None.
     */
-    static void HeadText(void);
+     void HeadText(void);
 
     /* Throw error message function
        ARGUMENTS:
-         - None;
+         - string s: error message;
        RETURNS:
          None.
     */
-    static void MyError(string s);
+     void MyError( string s );
 
     /* Print helping text about program function
        ARGUMENTS:
          None;
        RETURNS:
-          None.
+         None.
     */
-    static void Help(void);
+     void Help( void );
 
     /* Clear and refill console function
+       ARGUMENTS:
+         - string s: output message;
+       RETURNS:
+         None.
+    */
+     void ConsoleResetWithMessage( string s );
+
+    /* Read word function
+    ARGUMENTS:
+      None;
+    RETURNS:
+      (int) - 1 if successed, 0 if failed
+    */
+    int ReadWord( void );
+
+    /* Output array function
        ARGUMENTS:
          None;
        RETURNS:
          None.
     */
-    static void ConsoleResetWithMessage(string s);
-
-    /* Read word function
-    ARGUMENTS:
-      - Word *mas: pointer to word array;
-    RETURNS:
-      (int) - 1 if successed, 0 if failed
-    */
-    static int ReadWord( std::vector<Word>* mas );
-
-    /* Output array function
-       ARGUMENTS:
-         - Word *mas: pointer to word array
-       RETURNS:
-         None.
-    */
-    static void OutputArray( std::vector<Word>* mas );
+    void OutputArray( void );
 
     /* Delete word from temporary array function
        ARGUMENTS:
-         - Word *mas: pointer to word array
          - string s: key word;
        RETURNS:
          1 - if competed successfully, 0 - if error
     */
-    static int DeleteWord(std::vector<Word>* mas, std::string s);
+    int DeleteWord( std::string s );
 
     /* Edit word in temporary array function
        ARGUMENTS:
-         - Word *mas: pointer to word array
          - string s: key word;
        RETURNS:
          1 - if competed successfully, 0 - if error
     */
-    static int EditWord(vector<Word>* mas, string s);
+    int EditWord(string s );
 
     /* Clear word's parameters in temporary array function
        ARGUMENTS:
-         - Word *mas: pointer to word array
          - string s: key word;
        RETURNS:
          1 - if competed successfully, 0 - if error
     */
-    static int ResetProgress(vector<Word>* mas, string s);
+     int ResetProgress( string s );
 
     /* Clear temporary array function
        ARGUMENTS:
-         - Word *mas: pointer to word array
+         None;
        RETURNS:
          1 - if competed successfully, 0 - if error
     */
-    static int ClearArray(vector<Word>* mas);
+     int ClearArray( void );
 
     /* Training mode function
        ARGUMENTS:
-         - Word *mas: pointer to trainig word array
+         None;
        RETURNS:
          None.
     */
-    static void TrainingMode(vector<Word>* mas);
+     void TrainingMode( void );
 
     /* Exam mode function
        ARGUMENTS:
@@ -132,15 +150,25 @@ public:
        RETURNS:
          None.
     */
-    static void ExamMode(vector<Word>* mas);
+     void ExamMode( void );
 
    /* Test mode function
    ARGUMENTS:
-     - Word *mas: pointer to testing word array
+     None;
    RETURNS:
      None.
    */
-   static void TestMode(vector<Word>* mas);
+    void TestMode( void );
+
+    /* Upgraded random function
+       ARGUMENTS:
+         - int mi: minimum random number;
+         - int ma: maximum random number;
+         - int param: random parameter
+       RETURNS:
+         (int) random number.
+    */
+    int MyRand( int mi, int ma, int param );
 
 }; /* end of 'console' class */
 

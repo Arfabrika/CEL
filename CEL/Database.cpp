@@ -47,8 +47,8 @@ void Database::loadWords()
     if (!in)
     {
         // то выводим следующее сообщение об ошибке и выполняем функцию exit()
-        cerr << "Uh oh, words.txt could not be opened for reading!" << endl;
-        exit(1);
+        cons->MyError("Указанный файл не найден.");
+        return;
     }
 	std::string line;
 	if (in.is_open()) {
