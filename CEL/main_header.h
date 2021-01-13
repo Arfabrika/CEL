@@ -1,6 +1,6 @@
 /* FILE NAME: main_header.h
- * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 10.01.2020
+ * PROGRAMMER: Fabrika Artem
+ * DATE: 12.01.2020
  * PERPOSE: main header project file
  */
 
@@ -22,6 +22,7 @@
 #include <fstream>
 #include <algorithm>
 #include <time.h>
+#include <map>
 
 #include "console.h"
 #include "Database.h"

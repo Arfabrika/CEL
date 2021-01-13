@@ -1,11 +1,10 @@
 /* FILE NAME: Database.cpp
  * PROGRAMMER: Novikov Gordey
- * DATE: 16.11.2020
+ * DATE: 13.01.2021
  * PERPOSE: database functions file
  */
 
 #include "main_header.h"
-#include <map>
 
 const char SEPORATOR = ',';
 const double ERROR_AFFECT = 3.0;
@@ -15,7 +14,8 @@ const double RANDOM_AFFECT = 0.01;
    ARGUMENTS:
      None;
    RETURNS:
-     None. */
+     None.
+*/
 Database::Database()
 {
     wordfiledir = std::string("words.txt");
@@ -29,7 +29,8 @@ Database::Database()
      - Name of file with statistic:
         std::string stat_file;
    RETURNS:
-      None. */
+      None.
+*/
 Database::Database(std::string word_file, std::string stat_file)
 {
     wordfiledir = word_file;
@@ -40,14 +41,15 @@ Database::Database(std::string word_file, std::string stat_file)
    ARGUMENTS:
      None;
    RETURNS:
-     None. */
+     None.
+*/
 void Database::loadWords()
 {
 	std::ifstream in(wordfiledir);
     if (!in)
     {
-        // С‚Рѕ РІС‹РІРѕРґРёРј СЃР»РµРґСѓСЋС‰РµРµ СЃРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС€РёР±РєРµ Рё РІС‹РїРѕР»РЅСЏРµРј С„СѓРЅРєС†РёСЋ exit()
-        cons->MyError("РЈРєР°Р·Р°РЅРЅС‹Р№ С„Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ.");
+        // то выводим следующее сообщение об ошибке и выполняем функцию exit()
+        cons->MyError("Указанный файл не найден.");
         return;
     }
 	std::string line;
@@ -76,13 +78,14 @@ void Database::loadWords()
    ARGUMENTS:
      None;
    RETURNS:
-     None. */
+     None.
+*/
 void Database::loadMarks()
 {
     std::ifstream in(marksfiledir);
 	StringVector localStore;
 
-    //Р—Р°РіСЂСѓР·РєР° СЃР»РѕРІ РёР· С„Р°Р№Р»Р° РІ Р»РѕРєР°Р»СЊРЅРѕРµ С…СЂР°РЅРёР»РёС‰Рµ
+    //Загрузка слов из файла в локальное хранилище
 
 	std::string line;
 	if (in.is_open()) {
@@ -115,7 +118,7 @@ void Database::loadMarks()
 		}  
 	}
 	in.close();
-    //TODO РћСЂРіР°РЅРёР·РѕРІР°С‚СЊ РќРћР РњРђР›Р¬РќР«Р™ РџРѕРёСЃРє
+    //TODO Организовать НОРМАЛЬНЫЙ Поиск
     for(size_t i = 0; i < storage.size();i++){
         bool flag = 0;
         for(size_t j = 0; j < localStore.size();j++){
@@ -137,17 +140,18 @@ void Database::loadMarks()
    ARGUMENTS:
      None;
    RETURNS:
-     (StringVector) array of words */
+     (StringVector) array of words
+*/
 StringVector Database::getStorage()
 {
     return storage;
 }
-/*Take Word
-  ARGUMENTS:
-    (int) count of reqested words;
-  RETURNS:
-    (vector <Word>) vector of reqwested words;
- * */
+/* Take Word
+   ARGUMENTS:
+     (int) count of reqested words;
+   RETURNS:
+     (vector <Word>) vector of reqwested words;
+*/
 vector<Word> Database::getWords(int count)
 {
     map <int, Word> ans;
@@ -169,7 +173,7 @@ vector<Word> Database::getWords(int count)
     None;
   RETURNS:
     None;
- * */
+*/
 void Database::save(){
 	std::ofstream out(marksfiledir);
 	for(size_t i = 0; i < storage.size();i++){
@@ -187,5 +191,54 @@ void Database::save(){
     };
     out.close();
 }/* End of 'save' function */
+
+/* Save data in files with user's name function
+   ARGUMENTS:
+     None;
+   RETURNS:
+     (int) 1 - if competed successfully, 0 - if error
+*/
+int Database::GeneralSave( void )
+{
+  string UserName;
+
+  cons->HeadText();
+  printf("Введите название файла для сохранения данных: ");
+  cin >> UserName;
+  db->wordfiledir = UserName + ".txt";
+  db->marksfiledir = UserName + ".db";
+  if (cons->mas.size() == 0)
+    return 0;
+  db->storage.clear();
+  db->storage = cons->mas;
+  db->save();
+  db->storage.clear();
+  return 1;
+} /* End of 'GeneralLoad' function */
+
+/* Load data from files with user's name function
+   ARGUMENTS:
+     None;
+   RETURNS:
+     (int) 1 - if competed successfully, 0 - if error
+*/
+int Database::GeneralLoad( void )
+{
+  string UserName;
+
+  cons->HeadText();
+  printf("Введите название файла для загрузки данных: ");
+  cin >> UserName;
+  db->wordfiledir = UserName + ".txt";
+  db->marksfiledir = UserName + ".db";
+  db->loadWords();
+  db->loadMarks();
+  if (db->storage.size() == 0)
+    return 0;
+  cons->mas.clear();
+  cons->mas = db->storage;
+  db->storage.clear();
+  return 1;
+} /* End of 'GeneralSave' function */
 
 /* END OF 'Database.cpp' FILE */

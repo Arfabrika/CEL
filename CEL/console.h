@@ -1,6 +1,6 @@
 /* FILE NAME: console.h
- * PROGRAMMER: FABRIKA ARTEM (AF5)
- * DATE: 10.01.2020
+ * PROGRAMMER: Fabrika Artem
+ * DATE: 13.01.2020
  * PERPOSE: work with console header file
  */
 
@@ -39,54 +39,6 @@ public:
          None.
     */
     console( int time, int myexit, vector<Word> ma );
-
-    /* Print menu function
-       ARGUMENTS:
-         None;
-       RETURNS:
-         None.
-    */
-     void Menu( void );
-
-    /* Print menu of temporary array function
-       ARGUMENTS:
-         None;
-       RETURNS:
-          None.
-    */
-     void ArrayMenu( void );
-
-    /* Print head text function
-       ARGUMENTS:
-         None;
-       RETURNS:
-          None.
-    */
-     void HeadText(void);
-
-    /* Throw error message function
-       ARGUMENTS:
-         - string s: error message;
-       RETURNS:
-         None.
-    */
-     void MyError( string s );
-
-    /* Print helping text about program function
-       ARGUMENTS:
-         None;
-       RETURNS:
-         None.
-    */
-     void Help( void );
-
-    /* Clear and refill console function
-       ARGUMENTS:
-         - string s: output message;
-       RETURNS:
-         None.
-    */
-     void ConsoleResetWithMessage( string s );
 
     /* Read word function
     ARGUMENTS:
@@ -144,6 +96,14 @@ public:
     */
      void TrainingMode( void );
 
+     /* Training mode for all words in array function
+        ARGUMENTS:
+          None
+        RETURNS:
+          None.
+     */
+     void MainTrainingMode( void );
+
     /* Exam mode function
        ARGUMENTS:
          - Word *mas: pointer to trainig word array
@@ -152,13 +112,98 @@ public:
     */
      void ExamMode( void );
 
-   /* Test mode function
-   ARGUMENTS:
-     None;
-   RETURNS:
-     None.
-   */
+    /* Test mode function
+       ARGUMENTS:
+         None;
+       RETURNS:
+         None.
+    */
     void TestMode( void );
+
+    /* Constructor mode function
+       ARGUMENTS:
+         None;
+       RETURNS:
+         None.
+    */
+    void ConstructorMode(void);
+
+    /****
+     *    Utilits and output text functions
+     ****/
+
+    /* Print menu function
+       ARGUMENTS:
+         None;
+       RETURNS:
+         None.
+    */
+    void Menu( void );
+
+    /* Print menu of temporary array function
+       ARGUMENTS:
+         None;
+       RETURNS:
+          None.
+    */
+    void ArrayMenu( void );
+
+    /* Print menu of task functions
+       ARGUMENTS:
+         None;
+       RETURNS:
+         None.
+    */
+    void TaskMenu( void );
+
+    /* Print begin task menu function
+       ARGUMENTS:
+         - string name: type of task;
+       RETURNS:
+         None.
+    */
+    void BeginMenu( string name );
+
+    /* Print head text function
+       ARGUMENTS:
+         None;
+       RETURNS:
+          None.
+    */
+    void HeadText( void );
+
+    /* Throw error message function
+       ARGUMENTS:
+         - string s: error message;
+       RETURNS:
+         None.
+    */
+    void MyError( string s );
+
+    /* Print helping text about program function
+       ARGUMENTS:
+         None;
+       RETURNS:
+         None.
+    */
+    void Help( void );
+
+    /* Clear and refill console function
+       ARGUMENTS:
+         - string s: output message;
+       RETURNS:
+         None.
+    */
+    void ConsoleResetWithMessage( string s );
+
+    /* Print head in test function
+       ARGUMENTS:
+         - int: current word position;
+         - int: number of all answers;
+       RETURNS:
+         None.
+    */
+    void TestHead(int cur, int all);
 
     /* Upgraded random function
        ARGUMENTS:
@@ -173,4 +218,5 @@ public:
 }; /* end of 'console' class */
 
 #endif /*__CONSOLE_H*/
+
 /* END OF 'console.h' FILE */

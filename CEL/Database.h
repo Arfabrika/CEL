@@ -1,6 +1,6 @@
 /* FILE NAME: Database.h
  * PROGRAMMER: Novikov Gordey
- * DATE: 10.01.2021
+ * DATE: 11.01.2021
  * PERPOSE: database header file
  */
 
@@ -12,8 +12,10 @@
 /* Word array defenition */
 struct Word;
 
+/* Word array defenition */
 typedef std::vector <Word> StringVector;
 
+/* Database class */
 class Database
 {
 	
@@ -23,11 +25,13 @@ public:
     StringVector storage;     /* Word array */
     std::string wordfiledir;  /* File name with words */
 	  std::string marksfiledir; /* File name with statistic */
+
     /* Database class default constructor
        ARGUMENTS:
          None;
        RETURNS:
-         None. */
+         None.
+    */
     Database();
 
     /* Database class constructor
@@ -37,11 +41,12 @@ public:
          - Name of file with statistic:
             std::string stat_file;
        RETURNS:
-          None. */
+          None.
+     */
     Database(std::string word_file,std::string stat_file);
-    // РќРµ РІР°Р¶РЅРѕ РєР°Рє СЌС‚Рѕ СЂР°Р±РѕС‚Р°РµС‚,РІР°Р¶РЅРѕ С‡С‚Рѕ СЌС‚Рѕ СЂР°Р±РѕР°РµС‚
+    // Не важно как это работает,важно что это рабоает
     /*
-     * РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ
+     * Использование
      * Database* DB = new Database();
      * DB->loadWords();
      * DB->loadMarks();
@@ -51,14 +56,16 @@ public:
        ARGUMENTS:
          None;
        RETURNS:
-         None. */
+         None.
+    */
     void loadWords();
 
     /* Load statistic function
        ARGUMENTS:
          None;
        RETURNS:
-         None. */
+         None.
+    */
     void loadMarks();
 	
 	void save();
@@ -66,12 +73,28 @@ public:
        ARGUMENTS:
          None;
        RETURNS:
-         (StringVector) array of words */
+         (StringVector) array of words
+    */
     StringVector getStorage();
 
-    //РќРµ СЃРґРµР»Р°РЅРѕ
-    StringVector getWords(int count);
+    /* Load data from files with user's name function
+       ARGUMENTS:
+         None;
+       RETURNS:
+         (int) 1 - if competed successfully, 0 - if error
+    */
+    int GeneralSave( void );
 
+    /* Save data in files with user's name function
+       ARGUMENTS:
+         None;
+       RETURNS:
+         (int) 1 - if competed successfully, 0 - if error
+    */
+    int GeneralLoad( void );
+
+    //Не сделано
+    StringVector getWords(int count);
 };
 
 #endif /*__DATABASE_H*/
