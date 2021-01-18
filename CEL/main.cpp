@@ -1,6 +1,6 @@
 /* FILE NAME: main.cpp
  * PROGRAMMER: Fabrika Artem
- * DATE: 13.01.2020
+ * DATE: 18.01.2021
  * PERPOSE: main project file
  */
 
@@ -22,29 +22,31 @@ int main( void )
   cons = new console();
   db = new Database();
 
+#if 0
   /* Test section */
-  db->wordfiledir = "qqq.txt";
-  db->marksfiledir = "qqq.db";
+  db->wordfiledir = "Data\\test.txt";
+  db->marksfiledir = "Data\\test.db";
   db->loadWords();
   db->loadMarks();
   cons->mas = db->storage;
   /* End of test section */
-
+#endif 0
   SetConsoleCP(1251);
   SetConsoleOutputCP(1251);
   while (1)
   {
     string s;
-
+    
     cons->is_exit = 0;
     cons->HeadText();
     cons->Menu();
     switch (_getch())
     {
     case '0':
+        db->ExitSave();
         return 1;
     case '1':
-          system("cls");
+        system("cls");
         if (cons->ReadWord())
           printf("Слово успешно добавлено в временный массив!\n");
         break;
@@ -87,12 +89,44 @@ int main( void )
                 cout << "Прогресс слова """ << s << """ успешно сброшен!\n";
             break;
         case '5':
+            system("cls");
+            cons->HeadText();
             if (cons->ClearArray())
                 cout << "Временный массив успешно очищен!\n";
             else
             {
               cons->is_exit = 1;
               system("cls");
+            }
+            break;
+        case '6':
+            system("cls");
+            cons->HeadText();
+            if (cons->MixWords())
+                cout << "Временный массив успешно перемешан!\n";
+            break;
+        case '7':
+            system("cls");
+            cons->HeadText();
+            cons->SortMenu();
+            switch(_getch())
+            {
+            case '0':
+              cons->is_exit = 1;
+              system("cls");
+              break;
+            case '1':
+              system("cls");
+              cons->HeadText();
+              if(cons->SortAlpha())
+                cout << "Временный массив успешно отсортирован по алфавиту!\n";
+              break;
+            case '2':
+              system("cls");
+              cons->HeadText();
+              if(cons->SortAlphaBack())
+                cout << "Временный массив успешно отсортирован по алфавиту в обратном порядке!\n";
+              break;
             }
             break;
         }
@@ -109,31 +143,40 @@ int main( void )
             break;
         case '1':
             system("cls");
-            cons->TrainingMode();
+            cons->MainTrainingMode();
             break;
         case '2':
             system("cls");
-            cons->ExamMode();
+            cons->MainCommonMode(0);
             break;
         case '3':
             system("cls");
-            cons->TestMode();
+            cons->MainCommonMode(1);
             break;
         case '4':
             system("cls");
-            cons->ConstructorMode();
+            cons->MainCommonMode(2);
+            break;
+        case '5':
+            system("cls");
+            cons->MainMixedMode();
             break;
         }
         break;
     case '4':
         system("cls");
         if (db->GeneralSave())
-          cout << "Сохранение в файл " << db->wordfiledir << " успешно завершено!\n";
+          cout << "Сохранение в файл " << db->wordfiledir.substr(5) << " успешно завершено!\n";
         break;
     case '5':
         system("cls");
         if (db->GeneralLoad())
-          cout << "Загрузка из файла " << db->wordfiledir << " успешно завершена!\n";
+          cout << "Загрузка из файла " << db->wordfiledir.substr(5) << " успешно завершена!\n";
+        break;
+    case '8':
+        system("cls");
+        cons->HeadText();
+        cons->PrintVersions("Sys\\ver.cel");
         break;
     case '9':
         system("cls");

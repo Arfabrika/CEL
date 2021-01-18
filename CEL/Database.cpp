@@ -1,6 +1,6 @@
 /* FILE NAME: Database.cpp
  * PROGRAMMER: Novikov Gordey
- * DATE: 13.01.2021
+ * DATE: 18.01.2021
  * PERPOSE: database functions file
  */
 
@@ -18,8 +18,8 @@ const double RANDOM_AFFECT = 0.01;
 */
 Database::Database()
 {
-    wordfiledir = std::string("words.txt");
-    marksfiledir = std::string("mark.txt");
+    wordfiledir = std::string("Data\\words.txt");
+    marksfiledir = std::string("Data\\marks.txt");
 } /* End of default 'Datadase' constructor */
 
 /* Database class constructor
@@ -136,6 +136,7 @@ void Database::loadMarks()
         }
     } /* End of 'loadWords' function */
 }
+
 /* Get array of words function
    ARGUMENTS:
      None;
@@ -146,6 +147,7 @@ StringVector Database::getStorage()
 {
     return storage;
 }
+
 /* Take Word
    ARGUMENTS:
      (int) count of reqested words;
@@ -166,7 +168,6 @@ vector<Word> Database::getWords(int count)
     return _ans;
 
 } /* End of 'loadWords' function */
-
 
 /*Saving statistic and wordlist to files
   ARGUMENTS:
@@ -196,7 +197,7 @@ void Database::save(){
    ARGUMENTS:
      None;
    RETURNS:
-     (int) 1 - if competed successfully, 0 - if error
+     (int) 1 - if completed successfully, 0 - if error
 */
 int Database::GeneralSave( void )
 {
@@ -205,14 +206,14 @@ int Database::GeneralSave( void )
   cons->HeadText();
   printf("¬ведите название файла дл€ сохранени€ данных: ");
   cin >> UserName;
-  db->wordfiledir = UserName + ".txt";
-  db->marksfiledir = UserName + ".db";
+  wordfiledir = "Data\\" + UserName + ".txt";
+  marksfiledir = "Data\\" + UserName + ".db";
   if (cons->mas.size() == 0)
     return 0;
-  db->storage.clear();
-  db->storage = cons->mas;
-  db->save();
-  db->storage.clear();
+  storage.clear();
+  storage = cons->mas;
+  save();
+  storage.clear();
   return 1;
 } /* End of 'GeneralLoad' function */
 
@@ -220,7 +221,7 @@ int Database::GeneralSave( void )
    ARGUMENTS:
      None;
    RETURNS:
-     (int) 1 - if competed successfully, 0 - if error
+     (int) 1 - if completed successfully, 0 - if error
 */
 int Database::GeneralLoad( void )
 {
@@ -229,16 +230,34 @@ int Database::GeneralLoad( void )
   cons->HeadText();
   printf("¬ведите название файла дл€ загрузки данных: ");
   cin >> UserName;
-  db->wordfiledir = UserName + ".txt";
-  db->marksfiledir = UserName + ".db";
-  db->loadWords();
-  db->loadMarks();
-  if (db->storage.size() == 0)
+  wordfiledir = "Data\\" + UserName + ".txt";
+  marksfiledir = "Data\\" + UserName + ".db";
+  loadWords();
+  loadMarks();
+  if (storage.size() == 0)
     return 0;
   cons->mas.clear();
-  cons->mas = db->storage;
-  db->storage.clear();
+  cons->mas = storage;
+  storage.clear();
   return 1;
 } /* End of 'GeneralSave' function */
+
+/* Save data in files when exit function
+   ARGUMENTS:
+     None;
+   RETURNS:
+     (int) 1 - if completed successfully, 0 - if error
+*/
+int Database::ExitSave( void )
+{
+  if (wordfiledir == "Data\\words.txt" && marksfiledir == "Data\\marks.txt")
+  {
+    wordfiledir = "Data\\exit_save.txt";
+    marksfiledir = "Data\\exit_save.db";
+  }
+  storage = cons->mas;
+  save();
+  return 1;
+} /* End of 'ExitSave' function */
 
 /* END OF 'Database.cpp' FILE */

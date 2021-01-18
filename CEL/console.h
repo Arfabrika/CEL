@@ -1,6 +1,6 @@
 /* FILE NAME: console.h
  * PROGRAMMER: Fabrika Artem
- * DATE: 13.01.2020
+ * DATE: 18.01.2021
  * PERPOSE: work with console header file
  */
 
@@ -21,6 +21,10 @@ public:
     int RandomTime;   /* Time for random functions */
     int is_exit;      /* Variable for exit */
     vector<Word> mas; /* Word array */
+    int TaskTime;     /* Time of completing a task */
+
+    /* Array of task functions for one word */
+    int (console::*Tasks[NumOfTasks])(vector<int> *ArrayIndexes, vector<int> *IndexCounter, vector<int> *ErrorIndexes) = {};
 
     /* Console class default constructor
        ARGUMENTS:
@@ -35,10 +39,11 @@ public:
          - int time: time for random functions;
          - int myexit: need to exit in main menu;
          - StringVector ma: word array;
+         - int task_time: time of completing a task;
        RETURNS:
          None.
     */
-    console( int time, int myexit, vector<Word> ma );
+    console( int time, int myexit, vector<Word> ma, int task_time );
 
     /* Read word function
     ARGUMENTS:
@@ -60,7 +65,7 @@ public:
        ARGUMENTS:
          - string s: key word;
        RETURNS:
-         1 - if competed successfully, 0 - if error
+         1 - if completed successfully, 0 - if error
     */
     int DeleteWord( std::string s );
 
@@ -68,7 +73,7 @@ public:
        ARGUMENTS:
          - string s: key word;
        RETURNS:
-         1 - if competed successfully, 0 - if error
+         1 - if completed successfully, 0 - if error
     */
     int EditWord(string s );
 
@@ -76,57 +81,128 @@ public:
        ARGUMENTS:
          - string s: key word;
        RETURNS:
-         1 - if competed successfully, 0 - if error
+         1 - if completed successfully, 0 - if error
     */
-     int ResetProgress( string s );
+    int ResetProgress( string s );
 
     /* Clear temporary array function
        ARGUMENTS:
          None;
        RETURNS:
-         1 - if competed successfully, 0 - if error
+         1 - if completed successfully, 0 - if error
     */
-     int ClearArray( void );
+    int ClearArray( void );
+
+    /* Mix words in random order function
+       ARGUMENTS:
+         None.
+       RETURNS:
+         1 - if completed successfully, 0 - if error
+    */
+    int MixWords(void);
+
+    /* Sort words in alphabet order function
+       ARGUMENTS:
+         None.
+       RETURNS:
+         1 - if completed successfully, 0 - if error
+    */
+    int SortAlpha(void);
+
+    /* Sort words in back alphabet order function
+       ARGUMENTS:
+         None.
+       RETURNS:
+         1 - if completed successfully, 0 - if error
+    */
+    int SortAlphaBack(void);
+
+    /* Common mode for all task function
+       ARGUMENTS:
+         int TaskID: index of task type;
+       RETURNS:
+         None.
+    */
+    void MainCommonMode(int TaskID);
+
+    /* Training mode for all words in array function
+       ARGUMENTS:
+         None
+       RETURNS:
+         None.
+    */
+    void MainTrainingMode(void);
 
     /* Training mode function
        ARGUMENTS:
-         None;
+         - vector<int> *ArrayIndexes: pointer to array of word indexes;
+         - vector<int> *IndexCounter: pointer to number of used words
+       RETURNS:
+         (int) - -1 if exit, 0 if wrong answer, 1 if correct answer
+    */
+    int TrainingMode(vector<int> *ArrayIndexes,  vector<int> *IndexCounter);
+
+    /* Exam mode for all words in array function
+       ARGUMENTS:
+         None
        RETURNS:
          None.
     */
-     void TrainingMode( void );
-
-     /* Training mode for all words in array function
-        ARGUMENTS:
-          None
-        RETURNS:
-          None.
-     */
-     void MainTrainingMode( void );
+    void MainExamMode(void);
 
     /* Exam mode function
        ARGUMENTS:
-         - Word *mas: pointer to trainig word array
+         - vector<int> *ArrayIndexes: pointer to array of word indexes;
+         - vector<int> *IndexCounter: pointer to number of used words;
+         - vector<int> *ErrorIndexes: pointer to array of wrong word indexes;
        RETURNS:
-         None.
+         (int) - -1 if exit, 0 if wrong answer, 1 if correct answer
     */
-     void ExamMode( void );
+    int ExamMode(vector<int>* ArrayIndexes, vector<int>* IndexCounter, vector<int>* ErrorIndexes);
 
-    /* Test mode function
+    /* Test mode for all words in array function
        ARGUMENTS:
-         None;
+         None
        RETURNS:
          None.
     */
-    void TestMode( void );
+    void MainTestMode(void);
 
-    /* Constructor mode function
+    /* Test mode for one word function
        ARGUMENTS:
-         None;
+         - vector<int> *ArrayIndexes: pointer to array of word indexes;
+         - vector<int> *IndexCounter: pointer to number of used words;
+         - vector<int> *ErrorIndexes: pointer to array of wrong word indexes;
+       RETURNS:
+         (int) - -1 if exit, 0 if wrong answer, 1 if correct answer
+    */
+    int TestMode(vector<int>* ArrayIndexes, vector<int>* IndexCounter, vector<int>* ErrorIndexes);
+
+    /* Constructor mode for all words in array function
+       ARGUMENTS:
+         None
        RETURNS:
          None.
     */
-    void ConstructorMode(void);
+    void MainConstructorMode(void);
+
+    /* Test mode for one word function
+       ARGUMENTS:
+         - vector<int> *ArrayIndexes: pointer to array of word indexes;
+         - vector<int> *IndexCounter: pointer to number of used words;
+         - vector<int> *ErrorIndexes: pointer to array of wrong word indexes;
+       RETURNS:
+         (int) - -1 if exit, 0 if wrong answer, 1 if correct answer
+    */
+    int ConstructorMode(vector<int>* ArrayIndexes, vector<int>* IndexCounter, vector<int>* ErrorIndexes);
+
+    /* Mixed mode for all words in array function
+       ARGUMENTS:
+         None
+       RETURNS:
+         None.
+    */
+    void MainMixedMode(void); 
 
     /****
      *    Utilits and output text functions
@@ -156,13 +232,30 @@ public:
     */
     void TaskMenu( void );
 
-    /* Print begin task menu function
+    /* Print menu of sort functions
        ARGUMENTS:
-         - string name: type of task;
+         None;
        RETURNS:
          None.
     */
-    void BeginMenu( string name );
+    void SortMenu(void);
+
+    /* Print begin task menu function
+       ARGUMENTS:
+         None;
+       RETURNS:
+         (int) 0 if need to exit, 1 if continue task.
+    */
+    int BeginTaskMenu(void);
+
+    /* Print finish task menu function
+       ARGUMENTS:
+         - int Right: number of correct answers;
+         - vector <int> *ErrorIndexes: pointer to array of word with wrong answers indexes
+       RETURNS:
+         None.
+    */
+    void FinishTaskMenu(int Right, vector <int>* ErrorIndexes);
 
     /* Print head text function
        ARGUMENTS:
@@ -204,6 +297,14 @@ public:
          None.
     */
     void TestHead(int cur, int all);
+
+    /* Print version log function
+       ARGUMENTS:
+         string name: name of version log file;
+       RETURNS:
+         None.
+    */
+    void PrintVersions(string name);
 
     /* Upgraded random function
        ARGUMENTS:

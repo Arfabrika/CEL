@@ -1,6 +1,6 @@
 /* FILE NAME: main_header.h
  * PROGRAMMER: Fabrika Artem
- * DATE: 12.01.2020
+ * DATE: 15.01.2020
  * PERPOSE: main header project file
  */
 
@@ -10,6 +10,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define ConsoleResetWithMessageTime 7000   /* in ms*/
 #define MaxOutputWordSize 20               /* used in OutputArray */
+#define NumOfTasks 3											 /* number of tasks for one word */
 
 #include <cstdio>
 #include <windows.h>
@@ -23,6 +24,7 @@
 #include <algorithm>
 #include <time.h>
 #include <map>
+#include <functional>
 
 #include "console.h"
 #include "Database.h"

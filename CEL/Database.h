@@ -1,6 +1,6 @@
 /* FILE NAME: Database.h
  * PROGRAMMER: Novikov Gordey
- * DATE: 11.01.2021
+ * DATE: 15.01.2021
  * PERPOSE: database header file
  */
 
@@ -44,7 +44,6 @@ public:
           None.
      */
     Database(std::string word_file,std::string stat_file);
-    // Не важно как это работает,важно что это рабоает
     /*
      * Использование
      * Database* DB = new Database();
@@ -68,7 +67,14 @@ public:
     */
     void loadMarks();
 	
-	void save();
+    /* Save data function
+       ARGUMENTS:
+         None;
+       RETURNS:
+         None.
+    */
+	  void save();
+
     /* Get array of words function
        ARGUMENTS:
          None;
@@ -81,7 +87,7 @@ public:
        ARGUMENTS:
          None;
        RETURNS:
-         (int) 1 - if competed successfully, 0 - if error
+         (int) 1 - if completed successfully, 0 - if error
     */
     int GeneralSave( void );
 
@@ -89,9 +95,17 @@ public:
        ARGUMENTS:
          None;
        RETURNS:
-         (int) 1 - if competed successfully, 0 - if error
+         (int) 1 - if completed successfully, 0 - if error
     */
-    int GeneralLoad( void );
+    int GeneralLoad(void);
+
+    /* Save data in files when exit function
+       ARGUMENTS:
+         None;
+       RETURNS:
+         (int) 1 - if completed successfully, 0 - if error
+    */
+    int ExitSave(void);
 
     //Не сделано
     StringVector getWords(int count);
