@@ -1,6 +1,6 @@
 /* FILE NAME: utils.cpp
  * PROGRAMMER: Fabrika Artem
- * DATE: 18.01.2021
+ * DATE: 29.01.2021
  * PERPOSE: utilits and output text functions file
  */
 
@@ -21,10 +21,10 @@ int console::MyRand(int mi, int ma, int param )
   if (mi == 0)
     mi = 1;
   if (ma == 0)
-    ma = 1;
+    ma = 2;
   if (param == 0)
     param = rand() % 5648 + 19;
-  num = (((mi * ma + ma / param) / mi) + RandomTime % 13 + (rand() % param) * param + param % ma * rand()) % ma;
+  num = (((mi * ma + ma / param) / mi) + RandomTime % 13 + (rand() % param) * param + param % (ma + 3) * (rand() % (7 + mi))) % ma;
   if (num < mi)
     num = MyRand(mi, ma, param * rand() % 256);
   return num;
@@ -38,15 +38,16 @@ int console::MyRand(int mi, int ma, int param )
 */
 void console::Menu(void)
 {
-    printf("Для выбора необходимого пункта меню нажмите на соответственную клавишу\n"
-           "0 - выход\n"
-           "1 - ввести новое слово\n"
-           "2 - действия с временным списком слов\n"
-           "3 - выбор заданий\n"
-           "4 - сохранить список слов в файл\n"
-           "5 - загрузить список слов из файла\n"
-           "8 - журнал обновлений\n"
-           "9 - помощь/о программе\n");
+  printf("Для выбора необходимого пункта меню нажмите на соответственную клавишу\n"
+         "0 - выход\n"
+         "1 - ввести новое слово\n"
+         "2 - действия с временным списком слов\n"
+         "3 - выбор заданий\n"
+         "4 - сохранить список слов в файл\n"
+         "5 - загрузить список слов из файла\n"
+         "7 - настройки\n"
+         "8 - журнал обновлений\n"
+         "9 - помощь/о программе\n");
 } /* End of 'Menu' function */
 
 /* Print menu of temporary array function
@@ -57,15 +58,16 @@ void console::Menu(void)
 */
 void console::ArrayMenu(void)
 {
-    printf("Для выбора необходимого пункта меню нажмите на соответственную клавишу\n"
-           "0 - возвращение в главное меню\n"
-           "1 - просмотреть временный массив\n"
-           "2 - удалить слово из временного массива\n"
-           "3 - изменить перевод слова\n"
-           "4 - сбросить прогресс слова\n"
-           "5 - удалить временный массив\n"
-           "6 - перемешать слова в массиве\n"
-           "7 - отсортировать массив\n");
+  printf("Для выбора необходимого пункта меню нажмите на соответственную клавишу\n"
+         "0 - возвращение в главное меню\n"
+         "1 - просмотреть временный массив\n"
+         "2 - удалить слово из временного массива\n"
+         "3 - изменить перевод слова\n"
+         "4 - сбросить прогресс слова\n"
+         "5 - удалить временный массив\n"
+         "6 - перемешать слова в массиве\n"
+         "7 - отсортировать массив\n"
+         "8 - сбросить прогресс всех слов в массиве\n");
 } /* End of 'Menu' function */
 
 /* Print menu of task functions
@@ -76,30 +78,45 @@ void console::ArrayMenu(void)
 */
 void console::TaskMenu(void)
 {
-    printf("Для выбора необходимого пункта меню нажмите на соответственную клавишу\n"
-           "0 - возвращение в главное меню\n"
-           "1 - тренировка с подсказками\n"
-           "2 - перевод слова\n"
-           "3 - тест\n"
-           "4 - конструктор слов\n"
-           "5 - смешанный режим\n");
+  printf("Для выбора необходимого пункта меню нажмите на соответственную клавишу\n"
+         "0 - возвращение в главное меню\n"
+         "1 - тренировка с подсказками\n"
+         "2 - перевод слова\n"
+         "3 - тест\n"
+         "4 - конструктор слов\n"
+         "5 - смешанный режим\n"
+         "6 - проверка написания слова\n");
 } /* End of 'TaskMenu' function */
 
-/* Print menu of sort functions
+/* Print setting menu functions
    ARGUMENTS:
      None;
    RETURNS:
      None.
 */
-void console::SortMenu(void)
+void console::SettingMenu( void )
+{
+  printf("Для выбора необходимого пункта меню нажмите на соответственную клавишу\n"
+         "0 - возвращение в главное меню\n");
+  cout << "1 - сохранение слов в файл перед закрытием:          " << ((int)db->Set->ExitSave == 1 ? "Включено" : "Выключено") << "\n";
+  cout << "2 - загрузка слов из файла в начале работы:          " << ((int)db->Set->StartLoad == 1 ? "Включено" : "Выключено") << "\n";
+  cout << "3 - название файла, из которого происходит загрузка: " << db->Set->LastFileName;
+} /* End of 'SettingMenu' function */
+
+/* Print menu of sort function
+   ARGUMENTS:
+     None;
+   RETURNS:
+     None.
+*/
+void console::SortMenu( void )
 {
     printf("Для выбора необходимого пункта меню нажмите на соответственную клавишу\n"
            "0 - возвращение в главное меню\n"
            "1 - сортировка по алфавиту\n"
            "2 - сортировка по алфавиту в обратном порядке\n"
-           /*"3 - тест\n"
-           "4 - конструктор слов\n"
-           "5 - смешанный режим\n"*/);
+           "3 - сортировка по увеличению коэффициента ошибок слов\n"
+           "4 - сортировка по уменьшению коэффициента ошибок слов\n");
 } /* End of 'SortMenu' function */
 
 /* Print begin task menu function
@@ -119,7 +136,8 @@ int console::BeginTaskMenu( void )
    printf("Нажмите клавишу 'd', если хотите удалить какое-либо слово\n"
          "Нажмите клавишу '0', если хотите выйти в главное меню\n"
          "Нажмите любую другую клавишу, если Вы готовы пройти тест\n");
-  switch (_getch())
+  char param = _getch();
+  switch(param)
   {
   case 'd':
   case 'D':
@@ -171,7 +189,8 @@ void console::FinishTaskMenu( int Right, vector <int> *ErrorIndexes )
     printf("Могло быть и лучше...\n");
   else
     printf("Плохо\n");
-  printf("Вы прошли экзамен и правильно перевели %i слов из %i \n", Right, ArraySize);
+  printf("Вы выполнили задание и правильно перевели %i слов из %i \n", Right, ArraySize);
+  printf("Время, потраченное на выполнение задания: %02i:%02i\n", TaskTime / CLOCKS_PER_SEC / 60, (TaskTime / CLOCKS_PER_SEC) % 60);
   if (Right != ArraySize)
   {
     printf("Список слов, в которых Вы сделали ошибки:\n");
@@ -188,7 +207,7 @@ void console::FinishTaskMenu( int Right, vector <int> *ErrorIndexes )
 */
 void console::HeadText(void)
 {
-    printf("Console English Learning, ver 1.01\n"
+    printf("Console English Learning, ver 1.02\n"
         "**********************************\n");
 } /* End of 'HeadText' function */
 
@@ -240,14 +259,6 @@ void console::ConsoleResetWithMessage( string s )
         system("cls");
         return;
     }
-    /* Old variant with timer
-    printf("Возвращение в главное меню через %i", ConsoleResetWithMessageTime / 1000);
-    for (int i = ConsoleResetWithMessageTime - 1; i > 1000; i-= 1000)
-    {
-        printf(", %i", i / 1000);
-        Sleep(1000);
-    }
-    system("cls");*/
 } /* End of 'ConsoleResetWithMessage' function */
 
 /* Print head in test function
@@ -262,13 +273,13 @@ void console::TestHead( int cur, int all )
   printf("\n---------%i/%i----------\n", cur, all);
 } /* End of 'TestHead' function */
 
-/* Print version log function
+/* Print text from file function
    ARGUMENTS:
      string name: name of version log file;
    RETURNS:
      None.
 */
-void console::PrintVersions( string name )
+void console::PrintTextFile( string name )
 {
   ifstream in(name);
   string s;
@@ -277,6 +288,6 @@ void console::PrintVersions( string name )
   for (getline(in, s); !in.eof(); getline(in, s)) 
     cout << s << "\n";
   cout << s << "\n";
-} /* End of 'PrintVersions' functions */
+} /* End of 'PrintTextFile' functions */
 
 /* END OF 'utils.cpp' FILE */

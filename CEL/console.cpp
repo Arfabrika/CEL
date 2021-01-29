@@ -1,6 +1,6 @@
 /* FILE NAME: console.cpp
  * PROGRAMMER: Fabrika Artem
- * DATE: 16.01.2021
+ * DATE: 26.01.2021
  * PERPOSE: console functions file
  */
 
@@ -17,10 +17,13 @@ console::console()
   RandomTime = clock();
   is_exit = 0;
   TaskTime = 0;
+  LastFileName = "exit_save";
 
   Tasks[0] = &console::ExamMode;
   Tasks[1] = &console::TestMode;
   Tasks[2] = &console::ConstructorMode;
+  Tasks[3] = &console::CheckMode;
+  Tasks[4] = &console::TrainingMode;
 } /* End of console default constructor */
 
 /* Console class default constructor
@@ -29,21 +32,23 @@ console::console()
      - int myexit: need to exit in main menu;
      - StringVector ma: word array;
      - int task_time: time of completing a task;
+     - string FileName: name of last opened file;
    RETURNS:
      None.
 */
-console::console(int time, int myexit, vector<Word> ma, int task_time)
+console::console(int time, int myexit, vector<Word> ma, int task_time, string FileName )
 {
-  Word W;
-
   RandomTime = time;
   is_exit = myexit;
   mas = ma;
   TaskTime = task_time;
+  LastFileName = FileName;
 
   Tasks[0] = &console::ExamMode;
   Tasks[1] = &console::TestMode;
   Tasks[2] = &console::ConstructorMode;
+  Tasks[3] = &console::CheckMode;
+  Tasks[4] = &console::TrainingMode;
 } /* End of console constructor */
 
 /* Read word function
@@ -112,11 +117,12 @@ void console::OutputArray( void )
         printf("Массив слов пуст!\n");
         return;
     }
+    cout.fill(' ');
     cout << left << setw(MaxOutputWordSize) << "Слово" << setw(MaxOutputWordSize) << "Перевод" << "Количество проверок слова  Количество ошибок в слове  \n"
         ;// "Коэффициент правильных ответов слова\n";
     for (int i = 0; i < mas.size(); i++)
-        cout << setw(MaxOutputWordSize) << mas.at(i).Name << setw(MaxOutputWordSize) << mas.at(i).Translate
-        << setw(15) << " " << mas.at(i).NumOfUses << setw(20) << "    " << mas.at(i).NumOfWrongAnswers << "\n";//<< setw(30) << "            " << mas.at(i).ErrorKoef << "\n";
+        cout << setw(MaxOutputWordSize) << mas.at(i).Name << setw(MaxOutputWordSize + 13) << mas.at(i).Translate
+        << setw(28) << mas.at(i).NumOfUses << setw(28) << mas.at(i).NumOfWrongAnswers << "\n";//<< setw(30) << "            " << mas.at(i).ErrorKoef << "\n";
 } /* End of 'OutputArray' function */
 
 /* Delete word from temporary array function
@@ -223,6 +229,20 @@ int console::ResetProgress( string s )
     return 1;
 } /*End of 'ResetProgress' function */
 
+/* Clear all word's parameters in temporary array function
+   ARGUMENTS:
+     None;
+   RETURNS:
+     1 - if completed successfully, 0 - if error
+*/
+int console::ResetAllProgress( void )
+{
+  for (int i = 0; i < mas.size(); i++)
+    if (!ResetProgress(mas[i].Name))
+      return 0;
+  return 1;
+} /* End of 'ResetAllProgress' function */
+
 /* Clear temporary array function
    ARGUMENTS:
      None.
@@ -231,23 +251,24 @@ int console::ResetProgress( string s )
 */
 int console::ClearArray( void )
 {
-    if (mas.size() == 0)
-        return 0;
-    printf("Вы действительно хотите очистить временный массив? Данные в нем нельзя будет восстановить\n"
-    "Для подтверждения операции нажмите клавишу Y\n"
-    "Для выхода в главное меню нажмите любую другую кнопку\n");
-    switch(_getch())
-    {
-    case 'y':
-    case 'Y':
-    case 'н':
-    case 'Н':
-      mas.clear();
-      db->storage.clear();
-      return 1;
-    default:
+  if (mas.size() == 0)
       return 0;
-    }
+  printf("Вы действительно хотите очистить временный массив? Данные в нем нельзя будет восстановить\n"
+  "Для подтверждения операции нажмите клавишу Y\n"
+  "Для выхода в главное меню нажмите любую другую кнопку\n");
+  char param = _getch();
+  switch(param)
+  {
+  case 'y':
+  case 'Y':
+  case 'н':
+  case 'Н':
+    mas.clear();
+    db->storage.clear();
+    return 1;
+  default:
+    return 0;
+  }
 } /*End of 'ClearArray' function */
 
 /* Mix words in random order function
@@ -258,7 +279,7 @@ int console::ClearArray( void )
 */
 int console::MixWords( void )
 {
-  int random, ArraySize = (int)mas.size(), WordFlag = 1, IndexCounter;
+  int random = 1, ArraySize = (int)mas.size(), WordFlag = 1, IndexCounter;
   vector <int> ArrayIndexes;
   string UserTranslate;
 
@@ -269,7 +290,8 @@ int console::MixWords( void )
   
   for (IndexCounter = 0; IndexCounter < ArraySize; IndexCounter++)
   {
-    random = MyRand(0, ArraySize, (rand() + 1) % 2 + 19 + rand() % 58 + rand() + ArraySize);
+    if (ArraySize > 1)
+      random = MyRand(0, ArraySize, (rand() + 1) % 2 + 19 + rand() % 58 + rand() + ArraySize);
     while(WordFlag)
     {
       WordFlag = 0;
@@ -280,7 +302,8 @@ int console::MixWords( void )
           if(random == ArrayIndexes.at(q))
           {
             WordFlag = 1;
-            random = MyRand(0, ArraySize, (rand() + 1) % 2 + 19 + rand() % 58 + rand() + ArraySize);
+            if (ArraySize > 1)
+              random = MyRand(0, ArraySize, (rand() + 1) % 2 + 19 + rand() % 58 + rand() + ArraySize);
             break;
           }
         }
@@ -366,5 +389,59 @@ int console::SortAlphaBack( void )
     }
   return 1;
 } /* End of 'SortAlphaBack' function */
+
+/* Sort words in error coefficient order function
+   ARGUMENTS:
+     None.
+   RETURNS:
+     1 - if completed successfully, 0 - if error
+*/
+int console::SortErrorKoef( void )
+{
+  int ArraySize = (int)mas.size();
+
+  if (ArraySize == 0)
+    return 0;
+  
+  for (int i = 0; i < ArraySize; i++)
+    for (int j = i; j < ArraySize; j++)
+    {
+      if (mas.at(i).ErrorKoef > mas.at(j).ErrorKoef)
+      {
+        Word tmp = mas.at(i);
+
+        mas.at(i) = mas.at(j);
+        mas.at(j) = tmp;
+      }
+    }
+  return 1;
+} /* End of 'SortErrorKoefBack' function */
+
+/* Sort words in back error coefficient order function
+   ARGUMENTS:
+     None.
+   RETURNS:
+     1 - if completed successfully, 0 - if error
+*/
+int console::SortErrorKoefBack( void )
+{
+  int ArraySize = (int)mas.size();
+
+  if (ArraySize == 0)
+    return 0;
+  
+  for (int i = 0; i < ArraySize; i++)
+    for (int j = i; j < ArraySize; j++)
+    {
+      if (mas.at(i).ErrorKoef < mas.at(j).ErrorKoef)
+      {
+        Word tmp = mas.at(i);
+
+        mas.at(i) = mas.at(j);
+        mas.at(j) = tmp;
+      }
+    }
+  return 1;
+} /* End of 'SortErrorKoefBack' function */
 
 /* END OF 'console.cpp' FILE */

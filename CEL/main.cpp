@@ -1,6 +1,6 @@
 /* FILE NAME: main.cpp
  * PROGRAMMER: Fabrika Artem
- * DATE: 18.01.2021
+ * DATE: 26.01.2021
  * PERPOSE: main project file
  */
 
@@ -22,15 +22,16 @@ int main( void )
   cons = new console();
   db = new Database();
 
-#if 0
-  /* Test section */
-  db->wordfiledir = "Data\\test.txt";
-  db->marksfiledir = "Data\\test.db";
-  db->loadWords();
-  db->loadMarks();
-  cons->mas = db->storage;
-  /* End of test section */
-#endif 0
+  db->LoadSettings("Sys\\sets.cel");
+  if (db->Set->StartLoad)
+  {
+    db->wordfiledir = "Data\\" + db->Set->LastFileName + ".txt";
+    db->marksfiledir = "Data\\" + db->Set->LastFileName + ".db";
+    db->loadWords();
+    db->loadMarks();
+    cons->mas = db->storage;
+  }
+
   SetConsoleCP(1251);
   SetConsoleOutputCP(1251);
   while (1)
@@ -43,7 +44,8 @@ int main( void )
     switch (_getch())
     {
     case '0':
-        db->ExitSave();
+        if (db->Set->ExitSave)
+          db->ExitSave();
         return 1;
     case '1':
         system("cls");
@@ -127,8 +129,26 @@ int main( void )
               if(cons->SortAlphaBack())
                 cout << "Временный массив успешно отсортирован по алфавиту в обратном порядке!\n";
               break;
+            case '3':
+              system("cls");
+              cons->HeadText();
+              if(cons->SortErrorKoef())
+                cout << "Временный массив успешно отсортирован по увеличению коэффициента ошибок слов!\n";
+              break;
+            case '4':
+              system("cls");
+              cons->HeadText();
+              if(cons->SortErrorKoefBack())
+                cout << "Временный массив успешно отсортирован по уменьшению коэффициента ошибок слов!\n";
+              break;
             }
             break;
+        case '8':
+           system("cls");
+           cons->HeadText();
+           if (cons->ResetAllProgress())
+               cout << "Прогресс всех слов успешно сброшен!\n";
+           break;
         }
         break;
     case '3':
@@ -143,7 +163,7 @@ int main( void )
             break;
         case '1':
             system("cls");
-            cons->MainTrainingMode();
+            cons->MainCommonMode(4);
             break;
         case '2':
             system("cls");
@@ -161,6 +181,10 @@ int main( void )
             system("cls");
             cons->MainMixedMode();
             break;
+        case '6':
+            system("cls");
+            cons->MainCommonMode(3);
+            break;
         }
         break;
     case '4':
@@ -173,10 +197,49 @@ int main( void )
         if (db->GeneralLoad())
           cout << "Загрузка из файла " << db->wordfiledir.substr(5) << " успешно завершена!\n";
         break;
+    case '7':
+        system("cls");
+        cons->HeadText();
+        cons->SettingMenu();
+        switch(_getch())
+        {
+        case '0':
+          cons->is_exit = 1;
+          system("cls");
+          break;
+        case '1':
+          system("cls");
+          cons->HeadText();
+          if (!db->ChangeSettings(1))
+          {
+            cons->is_exit = 1;
+            system("cls");
+          }
+          break;
+        case '2':
+          system("cls");
+          cons->HeadText();
+          if (!db->ChangeSettings(2))
+          {
+            cons->is_exit = 1;
+            system("cls");
+          }
+          break;
+        case '3':
+          system("cls");
+          cons->HeadText();
+          if (!db->ChangeSettings(3))
+          {
+            cons->is_exit = 1;
+            system("cls");
+          }
+          break;
+        }
+        break;
     case '8':
         system("cls");
         cons->HeadText();
-        cons->PrintVersions("Sys\\ver.cel");
+        cons->PrintTextFile("Sys\\ver.cel");
         break;
     case '9':
         system("cls");

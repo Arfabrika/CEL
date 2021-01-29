@@ -1,6 +1,6 @@
 /* FILE NAME: main_header.h
  * PROGRAMMER: Fabrika Artem
- * DATE: 15.01.2020
+ * DATE: 23.01.2021
  * PERPOSE: main header project file
  */
 
@@ -8,9 +8,8 @@
 #define __MAIN_HEADER_H
 
 #define _CRT_SECURE_NO_WARNINGS
-#define ConsoleResetWithMessageTime 7000   /* in ms*/
-#define MaxOutputWordSize 20               /* used in OutputArray */
-#define NumOfTasks 3											 /* number of tasks for one word */
+#define MaxOutputWordSize 20    /* used in OutputArray */
+#define NumOfTasks 5				    /* number of tasks for one word */
 
 #include <cstdio>
 #include <windows.h>
@@ -31,17 +30,28 @@
 
 using namespace std;
 
-extern console *cons; /* console object */
-extern Database *db;  /* database object */
-
 /* Word struct defenition */
-typedef struct Word {
+typedef struct Word
+{
 	string Name;
 	string Translate;
 	int NumOfUses = 0;
 	int NumOfWrongAnswers = 0;
 	double ErrorKoef = 0;
-} Word; /* End of 'Word' struct */
+} Word;
+/* End of 'Word' struct */
+
+/* User settings struct defenition */
+typedef struct Settings
+{
+	bool ExitSave = false;						 /* Need to do exit save */
+	bool StartLoad = false;						 /* Need to do start load */
+	string LastFileName = "exit_save"; /* Name of last opened file */
+} Settings;
+/* End of 'Settings' struct */
+
+extern console *cons; /* console object */
+extern Database *db;  /* database object */
 
 #endif /*__MAIN_HEADER_H*/
 

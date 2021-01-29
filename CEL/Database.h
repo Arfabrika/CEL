@@ -1,6 +1,6 @@
 /* FILE NAME: Database.h
  * PROGRAMMER: Novikov Gordey
- * DATE: 15.01.2021
+ * DATE: 23.01.2021
  * PERPOSE: database header file
  */
 
@@ -9,8 +9,11 @@
 
 #include "main_header.h"
 
-/* Word array defenition */
+/* Word struct defenition */
 struct Word;
+
+/* User settings struct defenition */
+struct Settings;
 
 /* Word array defenition */
 typedef std::vector <Word> StringVector;
@@ -18,13 +21,12 @@ typedef std::vector <Word> StringVector;
 /* Database class */
 class Database
 {
-	
-  std::string installdir;
-	
+    std::string installdir;
 public:
     StringVector storage;     /* Word array */
     std::string wordfiledir;  /* File name with words */
 	  std::string marksfiledir; /* File name with statistic */
+    Settings* Set;            /* User settings struct */
 
     /* Database class default constructor
        ARGUMENTS:
@@ -40,10 +42,12 @@ public:
             std::string word_file;
          - Name of file with statistic:
             std::string stat_file;
+         - Settings struct:
+            Settings Sets; 
        RETURNS:
           None.
      */
-    Database(std::string word_file,std::string stat_file);
+    Database(std::string word_file,std::string stat_file, Settings *Sets);
     /*
      * Использование
      * Database* DB = new Database();
@@ -106,6 +110,30 @@ public:
          (int) 1 - if completed successfully, 0 - if error
     */
     int ExitSave(void);
+
+    /* Save user settings in file function
+       ARGUMENTS:
+         -string name: settings file name;
+       RETURNS:
+         (int) 1 - if completed successfully, 0 - if error
+    */
+    int LoadSettings(string name);
+
+    /* Save user settings in file function
+       ARGUMENTS:
+         -string name: settings file name;
+       RETURNS:
+         (int) 1 - if completed successfully, 0 - if error
+    */
+    int SaveSettings(string name);
+
+    /* Change user settings function
+       ARGUMENTS:
+         -int SetID: setting type;
+       RETURNS:
+         (int) 1 - if settings changed, 0 - if settings not changed
+    */
+    int ChangeSettings(int SetID);
 
     //Не сделано
     StringVector getWords(int count);

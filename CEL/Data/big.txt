@@ -1,0 +1,4 @@
+xcvbnm,xcvbnm
+qwertyuiop,qwertyuiop
+qazwsx,qazwsx
+asdfghjkl,asdfghjkl

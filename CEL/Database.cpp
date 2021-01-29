@@ -1,6 +1,6 @@
 /* FILE NAME: Database.cpp
  * PROGRAMMER: Novikov Gordey
- * DATE: 18.01.2021
+ * DATE: 29.01.2021
  * PERPOSE: database functions file
  */
 
@@ -18,8 +18,9 @@ const double RANDOM_AFFECT = 0.01;
 */
 Database::Database()
 {
-    wordfiledir = std::string("Data\\words.txt");
-    marksfiledir = std::string("Data\\marks.txt");
+  wordfiledir = std::string("Data\\words.txt");
+  marksfiledir = std::string("Data\\marks.txt");
+  Set = new Settings();
 } /* End of default 'Datadase' constructor */
 
 /* Database class constructor
@@ -28,13 +29,17 @@ Database::Database()
         std::string word_file;
      - Name of file with statistic:
         std::string stat_file;
+     - Settings struct:
+        Settings Sets;
    RETURNS:
       None.
 */
-Database::Database(std::string word_file, std::string stat_file)
+Database::Database(std::string word_file, std::string stat_file, Settings *Sets)
 {
     wordfiledir = word_file;
     marksfiledir = stat_file;
+    Set = new Settings();
+    Set = Sets;
 } /* End of 'Datadase' constructor */
 
 /* Load words function
@@ -48,7 +53,6 @@ void Database::loadWords()
 	std::ifstream in(wordfiledir);
     if (!in)
     {
-        // то выводим следующее сообщение об ошибке и выполняем функцию exit()
         cons->MyError("Указанный файл не найден.");
         return;
     }
@@ -93,7 +97,8 @@ void Database::loadMarks()
 		{
 			Word w;
 			std::string buf;
-            int counter = 0;
+      int counter = 0;
+
 			for (size_t i = 0; i < line.length(); i++)
 			{
 				if (line.at(i) == SEPORATOR) {
@@ -125,7 +130,7 @@ void Database::loadMarks()
             if(storage[i].Translate == localStore[j].Translate){
                 storage[i].NumOfUses = localStore[j].NumOfUses;
                 storage[i].NumOfWrongAnswers = localStore[j].NumOfWrongAnswers;
-                storage[i].ErrorKoef = storage[i].NumOfUses != 0? localStore[j].NumOfWrongAnswers / localStore[j].NumOfUses : 1;
+                storage[i].ErrorKoef = storage[i].NumOfUses != 0? (double)localStore[j].NumOfWrongAnswers / localStore[j].NumOfUses : 1;
                 flag = 1;
             }
         }
@@ -134,8 +139,8 @@ void Database::loadMarks()
             storage[i].NumOfWrongAnswers = 0;
             storage[i].ErrorKoef = 1;
         }
-    } /* End of 'loadWords' function */
-}
+    }
+} /* End of 'loadWords' function */
 
 /* Get array of words function
    ARGUMENTS:
@@ -228,10 +233,19 @@ int Database::GeneralLoad( void )
   string UserName;
 
   cons->HeadText();
+  
   printf("Введите название файла для загрузки данных: ");
   cin >> UserName;
   wordfiledir = "Data\\" + UserName + ".txt";
   marksfiledir = "Data\\" + UserName + ".db";
+
+  ifstream in(wordfiledir);
+  ifstream in2(wordfiledir);
+  if (!in.is_open() || !in2.is_open())
+    return 0;
+  
+  cons->mas.clear();
+  storage.clear();
   loadWords();
   loadMarks();
   if (storage.size() == 0)
@@ -257,7 +271,153 @@ int Database::ExitSave( void )
   }
   storage = cons->mas;
   save();
+  db->SaveSettings("Sys\\sets.cel");
   return 1;
 } /* End of 'ExitSave' function */
+
+/* Load user settings from file function
+   ARGUMENTS:
+     -string name: settings file name;
+   RETURNS:
+     (int) 1 - if completed successfully, 0 - if error
+*/
+int Database::LoadSettings( string name )
+{
+  ifstream in(name);
+  string buf;
+  int SettingsID = 0;
+
+  if (!in.is_open())
+    return 0;
+  while (getline(in, buf))
+  {
+    bool val = 0;
+
+    if (isdigit(buf[0]) && buf.size() == 1)
+      val = buf[0] - '0';
+
+    switch(SettingsID)
+    {
+    case 0:
+      Set->ExitSave = val;
+      break;
+    case 1:
+      Set->StartLoad = val;
+      break;
+    case 2:
+      Set->LastFileName = buf;
+      break;
+    default:
+      break;
+    }
+    SettingsID++;
+    buf.clear();
+  }
+  return 1;
+} /* End of 'LoadSettings' function */
+
+/* Save user settings in file function
+   ARGUMENTS:
+     -string name: settings file name;
+   RETURNS:
+     (int) 1 - if completed successfully, 0 - if error
+*/
+int Database::SaveSettings( string name )
+{
+  ofstream out(name);
+ 
+  if (!out.is_open())
+    return 0;
+  out << (int)Set->ExitSave << '\n';
+  out << (int)Set->StartLoad << '\n';
+  out << Set->LastFileName;
+  return 1;
+} /* End of 'SaveSettings' function */
+
+/* Change user settings function
+   ARGUMENTS:
+     -int SetID: setting type;
+   RETURNS:
+     (int) 1 - if settings changed, 0 - if settings not changed
+*/
+int Database::ChangeSettings( int SetID )
+{
+  if (Set == 0)
+    return 0;
+
+  string name;
+  ifstream in;
+  char param;
+
+  switch(SetID)
+  {
+  case 1:
+    printf("Для того, чтобы включить/выключить сохранение слов в файл перед закрытием, нажмите 'Y'\n"
+           "Для выхода в главное меню нажмите любую другую кнопку\n");
+    cout << "Данный параметр сейчас " << ((int)db->Set->ExitSave == 1 ? "включен" : "выключен") << "\n";
+    param = _getch();
+    switch(param)
+    {
+      case 'Y':
+      case 'y':
+      case 'Н':
+      case 'н':
+        db->Set->ExitSave = !db->Set->ExitSave;
+        break;
+      default:
+        return 0;
+      }
+      break;
+   case 2:
+    printf("Для того, чтобы включить/выключить загрузку слов из файла при начале работы программы, нажмите 'Y'\n"
+           "Для выхода в главное меню нажмите любую другую кнопку\n");
+    cout << "Данный параметр сейчас " << ((int)db->Set->StartLoad == 1 ? "включен" : "выключен") << "\n";
+    param = _getch();
+    switch(param)
+    {
+    case 'Y':
+    case 'y':
+    case 'Н':
+    case 'н':
+      db->Set->StartLoad = !db->Set->StartLoad;
+      break;
+    default:
+      return 0;
+    }
+    break;
+    case 3:
+      printf("Для того, чтобы изменить имя файла, из которого идет загрузка при начале работы программы, нажмите 'Y'\n"
+             "Для выхода в главное меню нажмите любую другую кнопку\n");
+      cout << "Сейчас загрузка идет из файла: " << db->Set->LastFileName << "\n";
+
+      param = _getch();
+      switch(param)
+      {
+      case 'Y':
+      case 'y':
+      case 'Н':
+      case 'н':
+        printf("Введите новое имя файла: ");
+        cin >> name;
+
+       in.open("Data\\" + name + ".txt");
+        if (!in.is_open())
+        {
+          cons->MyError("Такого файла не существует.");
+          cons->ConsoleResetWithMessage("Для возвращения в главное меню нажмите любую кнопку");
+          return 0;
+        }
+        db->Set->LastFileName = name;
+        break;
+      default:
+        return 0;
+      }
+      break;
+  default:
+    return 0;
+  }
+  printf("Настройки успешно изменены!\n");
+  return 1;
+} /* End of 'ChangeSettings' function */
 
 /* END OF 'Database.cpp' FILE */
