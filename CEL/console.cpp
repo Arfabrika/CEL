@@ -1,6 +1,6 @@
 /* FILE NAME: console.cpp
  * PROGRAMMER: Fabrika Artem
- * DATE: 26.01.2021
+ * DATE: 04.02.2021
  * PERPOSE: console functions file
  */
 
@@ -24,6 +24,7 @@ console::console()
   Tasks[2] = &console::ConstructorMode;
   Tasks[3] = &console::CheckMode;
   Tasks[4] = &console::TrainingMode;
+  Tasks[5] = &console::AlphabetMode;
 } /* End of console default constructor */
 
 /* Console class default constructor
@@ -49,6 +50,7 @@ console::console(int time, int myexit, vector<Word> ma, int task_time, string Fi
   Tasks[2] = &console::ConstructorMode;
   Tasks[3] = &console::CheckMode;
   Tasks[4] = &console::TrainingMode;
+  Tasks[5] = &console::AlphabetMode;
 } /* End of console constructor */
 
 /* Read word function
@@ -118,11 +120,10 @@ void console::OutputArray( void )
         return;
     }
     cout.fill(' ');
-    cout << left << setw(MaxOutputWordSize) << "Слово" << setw(MaxOutputWordSize) << "Перевод" << "Количество проверок слова  Количество ошибок в слове  \n"
-        ;// "Коэффициент правильных ответов слова\n";
+    cout << left << setw(MaxOutputWordSize) << "Слово" << setw(MaxOutputWordSize) << "Перевод" << "Количество проверок слова  Количество ошибок в слове  \n";
     for (int i = 0; i < mas.size(); i++)
         cout << setw(MaxOutputWordSize) << mas.at(i).Name << setw(MaxOutputWordSize + 13) << mas.at(i).Translate
-        << setw(28) << mas.at(i).NumOfUses << setw(28) << mas.at(i).NumOfWrongAnswers << "\n";//<< setw(30) << "            " << mas.at(i).ErrorKoef << "\n";
+        << setw(28) << mas.at(i).NumOfUses << setw(28) << mas.at(i).NumOfWrongAnswers << "\n";
 } /* End of 'OutputArray' function */
 
 /* Delete word from temporary array function
@@ -195,7 +196,7 @@ int console::EditWord( string s )
     return 1;
 } /*End of 'EditWord' function */
 
-/* Clear word's parameters in temporary array function
+/* Clear word's parameters function
    ARGUMENTS:
      - string s: key word;
    RETURNS:
@@ -310,7 +311,7 @@ int console::MixWords( void )
       }
       else
 
-        /* Find last elements */
+      /* Find last elements */
       {
         random = 0;
         while(random < ArraySize)

@@ -1,6 +1,6 @@
 /* FILE NAME: utils.cpp
  * PROGRAMMER: Fabrika Artem
- * DATE: 29.01.2021
+ * DATE: 04.02.2021
  * PERPOSE: utilits and output text functions file
  */
 
@@ -10,7 +10,7 @@
    ARGUMENTS:
      - int mi: minimum random number;
      - int ma: maximum random number;
-     - int param: random parameter
+     - int param: random parameter;
    RETURNS:
      (int) random number.
 */
@@ -68,7 +68,7 @@ void console::ArrayMenu(void)
          "6 - перемешать слова в массиве\n"
          "7 - отсортировать массив\n"
          "8 - сбросить прогресс всех слов в массиве\n");
-} /* End of 'Menu' function */
+} /* End of 'ArrayMenu' function */
 
 /* Print menu of task functions
    ARGUMENTS:
@@ -85,7 +85,8 @@ void console::TaskMenu(void)
          "3 - тест\n"
          "4 - конструктор слов\n"
          "5 - смешанный режим\n"
-         "6 - проверка написания слова\n");
+         "6 - проверка написания слова\n"
+         "7 - изучение английского алфавита\n");
 } /* End of 'TaskMenu' function */
 
 /* Print setting menu functions
@@ -98,9 +99,33 @@ void console::SettingMenu( void )
 {
   printf("Для выбора необходимого пункта меню нажмите на соответственную клавишу\n"
          "0 - возвращение в главное меню\n");
-  cout << "1 - сохранение слов в файл перед закрытием:          " << ((int)db->Set->ExitSave == 1 ? "Включено" : "Выключено") << "\n";
-  cout << "2 - загрузка слов из файла в начале работы:          " << ((int)db->Set->StartLoad == 1 ? "Включено" : "Выключено") << "\n";
-  cout << "3 - название файла, из которого происходит загрузка: " << db->Set->LastFileName;
+  cout << "1 - сохранение слов в файл перед закрытием:            " << ((int)db->Set->ExitSave == 1 ? "Включено" : "Выключено") << "\n";
+  cout << "2 - загрузка слов из файла в начале работы:            " << ((int)db->Set->StartLoad == 1 ? "Включено" : "Выключено") << "\n";
+  cout << "3 - название файла, из которого происходит загрузка:   " << db->Set->LastFileName << "\n";
+  cout << "4 - сортировка при закрытии файла:                     ";
+  switch(db->Set->ExitSort)
+  {
+  case 1:
+    printf("по алфавиту по возрастанию (A-Z)\n");
+    break;
+  case 2:
+    printf("по алфавиту по убыванию (Z-A)\n");
+    break;
+  case 3:
+    printf("по частоте ошибок по убыванию\n");
+    break;
+  case 4:
+    printf("по частоте ошибок по возрастанию\n");
+    break;
+  default:
+    printf("отключена\n");
+  }
+  cout << "5 - предупреждение при сохранении в существующий файл: " << ((int)db->Set->ResaveMenu == 1 ? "Включено" : "Выключено") << "\n";
+  cout << "6 - количество загружаемых слов из файла:              ";
+  if(db->Set->NumOfWords)
+    cout << db->Set->NumOfWords << " слов\n";
+  else
+    cout << "все слова\n";
 } /* End of 'SettingMenu' function */
 
 /* Print menu of sort function
@@ -207,7 +232,7 @@ void console::FinishTaskMenu( int Right, vector <int> *ErrorIndexes )
 */
 void console::HeadText(void)
 {
-    printf("Console English Learning, ver 1.02\n"
+    printf("Console English Learning, ver 1.03\n"
         "**********************************\n");
 } /* End of 'HeadText' function */
 
@@ -230,19 +255,15 @@ void console::MyError(string s)
 */
 void console::Help(void)
 {
-    printf("Console English Learning - программа, помогающая в заучивании слов других языков\n"
-           "Как ей пользоваться?\n"
-           "Для начала нужно ввести определенное количество слов. Нажав кнопку '1' в главном меню, Вы перейдете в режим добавления слова.\n"
-           "Посмотреть уже введеннные слова можно, нажав кнопку '2' в главном меню, а затем нажав кнопку '1' в вспомогательном меню. В том же меню можно удалить слово из списка или изменить его перевод, а также перемешать или отсортировать массив в нужном порядке\n"
-           "Все задания находятся в меню заданий, которое открывается нажатием на кнопку '3' в главном меню.\n"
-           "Для более успешного запоминания слов Вы можете пройти тренеровку, нажав кнопку '1' в меню заданий.\n"
-           "Для проверки своих знаний вы можете пройти экзамен, нажав кнопку '2' в меню заданий\n"
-           "Кроме экзамена, проверить знания можно и в режиме теста (кнопка '3' в меню заданий)\n"
-           "В режиме 'Конструктор слов' Вам нужно собрать слово из набора букв и учитывая его перевод (кнопка '4' в меню заданий)\n"
-           "В режиме 'Смешанный режим' на каждое слово Вам предстоит выполнить одно из случайным образом выбранных заданий (кнопка '5' в меню заданий)\n"
-           "Не забывайте сохранять слова в файл! В противном случае, после выхода из программы список слов будет потерян. Для сохранения списка слов в файл нажмите кнопку '4' в главном меню.\n"
-           "Хотите вернуться к старым словам? Загрузите слова из файла, нажав кнопку '5' в главном менюю\n"
-           "Успехов в обучении!\n");
+  ifstream in("Sys\\ver.cel");
+  string s = "0";
+
+  while (s != "#")
+  {
+    getline(in, s);
+    if (s != "#")
+      cout << s << "\n";
+  }
 } /* End of 'Help' function */
 
 /* Clear and refill console function
@@ -284,9 +305,10 @@ void console::PrintTextFile( string name )
   ifstream in(name);
   string s;
 
-  setlocale(LC_ALL, "Russian");
+  while (s != "#")
+    getline(in, s);
   for (getline(in, s); !in.eof(); getline(in, s)) 
-    cout << s << "\n";
+   cout << s << "\n";
   cout << s << "\n";
 } /* End of 'PrintTextFile' functions */
 

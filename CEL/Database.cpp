@@ -1,6 +1,6 @@
 /* FILE NAME: Database.cpp
  * PROGRAMMER: Novikov Gordey
- * DATE: 29.01.2021
+ * DATE: 04.02.2021
  * PERPOSE: database functions file
  */
 
@@ -18,8 +18,8 @@ const double RANDOM_AFFECT = 0.01;
 */
 Database::Database()
 {
-  wordfiledir = std::string("Data\\words.txt");
-  marksfiledir = std::string("Data\\marks.txt");
+  wordfiledir = std::string("Data\\words.cel");
+  marksfiledir = std::string("Data\\marks.cel");
   Set = new Settings();
 } /* End of default 'Datadase' constructor */
 
@@ -88,10 +88,8 @@ void Database::loadMarks()
 {
     std::ifstream in(marksfiledir);
 	StringVector localStore;
-
-    //Загрузка слов из файла в локальное хранилище
-
 	std::string line;
+
 	if (in.is_open()) {
 		while (getline(in, line))
 		{
@@ -123,7 +121,7 @@ void Database::loadMarks()
 		}  
 	}
 	in.close();
-    //TODO Организовать НОРМАЛЬНЫЙ Поиск
+
     for(size_t i = 0; i < storage.size();i++){
         bool flag = 0;
         for(size_t j = 0; j < localStore.size();j++){
@@ -142,22 +140,11 @@ void Database::loadMarks()
     }
 } /* End of 'loadWords' function */
 
-/* Get array of words function
+/* Take random words function
    ARGUMENTS:
-     None;
+     (int) count of requested words;
    RETURNS:
-     (StringVector) array of words
-*/
-StringVector Database::getStorage()
-{
-    return storage;
-}
-
-/* Take Word
-   ARGUMENTS:
-     (int) count of reqested words;
-   RETURNS:
-     (vector <Word>) vector of reqwested words;
+     (vector <Word>) vector of requested words;
 */
 vector<Word> Database::getWords(int count)
 {
@@ -172,7 +159,33 @@ vector<Word> Database::getWords(int count)
     }
     return _ans;
 
-} /* End of 'loadWords' function */
+} /* End of 'getWords' function */
+
+/* Take words with mistakes function
+   ARGUMENTS:
+     (int) count of requested words;
+   RETURNS:
+     (vector <Word>) vector of requested words;
+*/
+vector<Word> Database::GetMistakeWords( int count )
+{
+  int ArraySize = storage.size();
+  vector <Word> ans = storage;
+
+  for (int i = 0; i < ArraySize; i++)
+    for (int j = i; j < ArraySize; j++)
+    {
+      if (ans.at(i).ErrorKoef < ans.at(j).ErrorKoef)
+      {
+        Word tmp = ans.at(i);
+    
+        ans.at(i) = ans.at(j);
+        ans.at(j) = tmp;
+      }
+    }
+  ans.resize(count);
+  return ans;
+} /* End of GetMistakeWords' function */
 
 /*Saving statistic and wordlist to files
   ARGUMENTS:
@@ -182,6 +195,12 @@ vector<Word> Database::getWords(int count)
 */
 void Database::save(){
 	std::ofstream out(marksfiledir);
+  
+  if (!out.is_open())
+  {
+    cons->MyError("Ошибка при сохранении. Не удалось открыть файл сохранения.");
+    return;
+  }
 	for(size_t i = 0; i < storage.size();i++){
         out << storage[i].Translate << SEPORATOR;
         out << storage[i].NumOfUses << SEPORATOR;
@@ -190,6 +209,11 @@ void Database::save(){
     };
     out.close();
     out.open(wordfiledir);
+    if (!out.is_open())
+    {
+      cons->MyError("Ошибка при сохранении. Не удалось открыть файл сохранения.");
+      return;
+    }
     for(size_t i = 0; i < storage.size();i++){
         out << storage[i].Name << SEPORATOR;
         out << storage[i].Translate;
@@ -212,9 +236,43 @@ int Database::GeneralSave( void )
   printf("Введите название файла для сохранения данных: ");
   cin >> UserName;
   wordfiledir = "Data\\" + UserName + ".txt";
-  marksfiledir = "Data\\" + UserName + ".db";
+  marksfiledir = "Data\\" + UserName + ".cel";
   if (cons->mas.size() == 0)
     return 0;
+  ifstream in(wordfiledir);
+  ifstream in2(wordfiledir);
+  if ((in.is_open() || in2.is_open()) && Set->ResaveMenu)
+  {
+    printf("Файл с таким именем уже существует. Вы действительно хотите перезаписать его?\n"
+           "Нажмите кнопку 'Y' чтобы продолжить или любую другую, чтобы выйти в главное меню\n");
+
+    char param = _getch();
+    switch(param)
+    {
+      case 'Y':
+      case 'y':
+      case 'Н':
+      case 'н':
+        break;
+      default:
+        return 1;
+    }
+  }
+  switch (Set->ExitSort)
+  {
+  case 1:
+    cons->SortAlpha();
+    break;
+  case 2:
+    cons->SortAlphaBack();
+    break;
+  case 3:
+    cons->SortErrorKoef();
+    break;
+  case 4:
+    cons->SortErrorKoefBack();
+    break;
+  }
   storage.clear();
   storage = cons->mas;
   save();
@@ -237,20 +295,24 @@ int Database::GeneralLoad( void )
   printf("Введите название файла для загрузки данных: ");
   cin >> UserName;
   wordfiledir = "Data\\" + UserName + ".txt";
-  marksfiledir = "Data\\" + UserName + ".db";
+  marksfiledir = "Data\\" + UserName + ".cel";
 
   ifstream in(wordfiledir);
   ifstream in2(wordfiledir);
   if (!in.is_open() || !in2.is_open())
+  {
+    printf("Указанный файл не найден\n\n");
     return 0;
-  
+  }
+
   cons->mas.clear();
   storage.clear();
   loadWords();
   loadMarks();
   if (storage.size() == 0)
     return 0;
-  cons->mas.clear();
+  if (Set->NumOfWords != 0)
+    storage = GetMistakeWords(Set->NumOfWords);
   cons->mas = storage;
   storage.clear();
   return 1;
@@ -267,7 +329,22 @@ int Database::ExitSave( void )
   if (wordfiledir == "Data\\words.txt" && marksfiledir == "Data\\marks.txt")
   {
     wordfiledir = "Data\\exit_save.txt";
-    marksfiledir = "Data\\exit_save.db";
+    marksfiledir = "Data\\exit_save.cel";
+  }
+  switch (Set->ExitSort)
+  {
+  case 1:
+    cons->SortAlpha();
+    break;
+  case 2:
+    cons->SortAlphaBack();
+    break;
+  case 3:
+    cons->SortErrorKoef();
+    break;
+  case 4:
+    cons->SortErrorKoefBack();
+    break;
   }
   storage = cons->mas;
   save();
@@ -285,7 +362,7 @@ int Database::LoadSettings( string name )
 {
   ifstream in(name);
   string buf;
-  int SettingsID = 0;
+  int SettingsID = 0, i = 0;
 
   if (!in.is_open())
     return 0;
@@ -306,6 +383,19 @@ int Database::LoadSettings( string name )
       break;
     case 2:
       Set->LastFileName = buf;
+      break;
+    case 3:
+      Set->ExitSort = val;
+      break;
+    case 4:
+      Set->ResaveMenu = val;
+      break;
+    case 5:
+      while (isdigit(buf[i]))
+      {
+        Set->NumOfWords = Set->NumOfWords * 10 + buf[i] - '0';
+        i++;
+      }
       break;
     default:
       break;
@@ -330,7 +420,10 @@ int Database::SaveSettings( string name )
     return 0;
   out << (int)Set->ExitSave << '\n';
   out << (int)Set->StartLoad << '\n';
-  out << Set->LastFileName;
+  out << Set->LastFileName  << '\n';
+  out << Set->ExitSort << '\n';
+  out << (int)Set->ResaveMenu << '\n';
+  out << Set->NumOfWords << '\n';
   return 1;
 } /* End of 'SaveSettings' function */
 
@@ -348,6 +441,7 @@ int Database::ChangeSettings( int SetID )
   string name;
   ifstream in;
   char param;
+  int NumOfWords = 0, i = 1;
 
   switch(SetID)
   {
@@ -388,7 +482,7 @@ int Database::ChangeSettings( int SetID )
     case 3:
       printf("Для того, чтобы изменить имя файла, из которого идет загрузка при начале работы программы, нажмите 'Y'\n"
              "Для выхода в главное меню нажмите любую другую кнопку\n");
-      cout << "Сейчас загрузка идет из файла: " << db->Set->LastFileName << "\n";
+      cout << "Сейчас загрузка идет из файла: " << Set->LastFileName << "\n";
 
       param = _getch();
       switch(param)
@@ -407,15 +501,86 @@ int Database::ChangeSettings( int SetID )
           cons->ConsoleResetWithMessage("Для возвращения в главное меню нажмите любую кнопку");
           return 0;
         }
-        db->Set->LastFileName = name;
+        Set->LastFileName = name;
         break;
       default:
         return 0;
       }
       break;
+    case 4:
+      printf("Нажмите '0' для выхода в главное меню\nСейчас сортировка ");
+      switch(Set->ExitSort)
+      {
+      case 1:
+        printf("по алфавиту по возрастанию (A-Z)\n");
+        break;
+      case 2:
+        printf("по алфавиту по убыванию (Z-A)\n");
+        break;
+      case 3:
+        printf("по частоте ошибок по убыванию\n");
+        break;
+      case 4:
+        printf("по частоте ошибок по возрастанию\n");
+        break;
+      default:
+        printf("отключена\n");
+      }
+      printf("Нажмите нужную клавишу для изменения настройки:\n"
+             "1 - отключить сортировку\n"
+             "2 - включить сортировку по алфавиту по возрастанию (A-Z)\n"
+             "3 - включить сортировку по алфавиту по убыванию (Z-A)\n"
+             "4 - включить сортировку по по частоте ошибок по убыванию\n"
+             "5 - включить сортировку по по частоте ошибок по возрастанию\n");
+      int param;
+
+      scanf("%i", &param);
+      if (param == 0)
+        return 0;
+      Set->ExitSort = param - 1;
+      break;
+    case 5:
+    printf("Для того, чтобы включить/выключить подтверждение при сохранении в существующий файл, нажмите 'Y'\n"
+           "Для выхода в главное меню нажмите любую другую кнопку\n");
+    cout << "Данный параметр сейчас " << ((int)db->Set->ResaveMenu == 1 ? "включен" : "выключен") << "\n";
+    param = _getch();
+    switch(param)
+    {
+      case 'Y':
+      case 'y':
+      case 'Н':
+      case 'н':
+        db->Set->ResaveMenu = !db->Set->ResaveMenu;
+        break;
+      default:
+        return 0;
+      }
+      break;
+    case 6:
+      printf("Нажмите '0' для выхода в главное меню\n");
+      if (Set->NumOfWords == 0)
+        printf("В данный момент загружаются все слова из файла\n");
+      else
+        printf("В данный момент загружаются %i слов из файла\n", Set->NumOfWords);
+      printf("Введите количество слов, которое хотите загружать из файла, или слово all, если хотите загружать все слова из файла\n");
+      cin >> name;
+      if (name[0] == '0')
+        return 0;
+      if (isdigit(name[0]))
+      {
+        NumOfWords = name[0] - '0';
+        while (isdigit(name[i]))
+        {
+          NumOfWords = NumOfWords * 10 + name[i] - '0';
+          i++;
+        }
+      }
+      Set->NumOfWords = NumOfWords;
+      break;
   default:
     return 0;
   }
+  SaveSettings("Sys\\sets.cel");
   printf("Настройки успешно изменены!\n");
   return 1;
 } /* End of 'ChangeSettings' function */

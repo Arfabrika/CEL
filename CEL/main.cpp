@@ -1,6 +1,6 @@
 /* FILE NAME: main.cpp
  * PROGRAMMER: Fabrika Artem
- * DATE: 26.01.2021
+ * DATE: 03.02.2021
  * PERPOSE: main project file
  */
 
@@ -185,6 +185,10 @@ int main( void )
             system("cls");
             cons->MainCommonMode(3);
             break;
+        case '7':
+            system("cls");
+            cons->MainCommonMode(5);
+            break;
         }
         break;
     case '4':
@@ -194,8 +198,10 @@ int main( void )
         break;
     case '5':
         system("cls");
-        if (db->GeneralLoad())
+        if(db->GeneralLoad())
           cout << "Загрузка из файла " << db->wordfiledir.substr(5) << " успешно завершена!\n";
+        else
+          cons->MyError("Ошибка при загрузке файла.");
         break;
     case '7':
         system("cls");
@@ -229,6 +235,33 @@ int main( void )
           system("cls");
           cons->HeadText();
           if (!db->ChangeSettings(3))
+          {
+            cons->is_exit = 1;
+            system("cls");
+          }
+          break;
+        case '4':
+          system("cls");
+          cons->HeadText();
+          if (!db->ChangeSettings(4))
+          {
+            cons->is_exit = 1;
+            system("cls");
+          }
+          break;
+        case '5':
+          system("cls");
+          cons->HeadText();
+          if (!db->ChangeSettings(5))
+          {
+            cons->is_exit = 1;
+            system("cls");
+          }
+          break;
+        case '6':
+          system("cls");
+          cons->HeadText();
+          if (!db->ChangeSettings(6))
           {
             cons->is_exit = 1;
             system("cls");

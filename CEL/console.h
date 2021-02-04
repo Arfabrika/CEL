@@ -1,6 +1,6 @@
 /* FILE NAME: console.h
  * PROGRAMMER: Fabrika Artem
- * DATE: 26.01.2021
+ * DATE: 30.01.2021
  * PERPOSE: work with console header file
  */
 
@@ -202,6 +202,14 @@ public:
          (int) - -1 if exit, 0 if wrong answer, 1 if correct answer
     */
     int CheckMode(int IndexCounter);
+
+    /* Check spelling word mode for one word function
+       ARGUMENTS:
+         - int LetterIndex: index ot testing letter;
+       RETURNS:
+         (int) - -1 if exit, 0 if wrong answer, 1 if correct answer
+    */
+    int AlphabetMode(int LetterIndex);
 
     /****
      *    Utilits and output text functions

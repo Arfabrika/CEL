@@ -1,6 +1,6 @@
 /* FILE NAME: main_header.h
  * PROGRAMMER: Fabrika Artem
- * DATE: 23.01.2021
+ * DATE: 03.02.2021
  * PERPOSE: main header project file
  */
 
@@ -9,7 +9,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #define MaxOutputWordSize 20    /* used in OutputArray */
-#define NumOfTasks 5				    /* number of tasks for one word */
+#define NumOfTasks 6				    /* number of tasks for one word */
 
 #include <cstdio>
 #include <windows.h>
@@ -47,6 +47,9 @@ typedef struct Settings
 	bool ExitSave = false;						 /* Need to do exit save */
 	bool StartLoad = false;						 /* Need to do start load */
 	string LastFileName = "exit_save"; /* Name of last opened file */
+	int ExitSort = 0;									 /* Type of sort in file when exit */
+	bool ResaveMenu = false;					 /* Need to output resave menu */
+	int NumOfWords = 0;								 /* Number of loading words */
 } Settings;
 /* End of 'Settings' struct */
 

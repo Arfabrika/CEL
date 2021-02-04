@@ -1,6 +1,6 @@
 /* FILE NAME: Database.h
  * PROGRAMMER: Novikov Gordey
- * DATE: 23.01.2021
+ * DATE: 03.02.2021
  * PERPOSE: database header file
  */
 
@@ -21,7 +21,6 @@ typedef std::vector <Word> StringVector;
 /* Database class */
 class Database
 {
-    std::string installdir;
 public:
     StringVector storage;     /* Word array */
     std::string wordfiledir;  /* File name with words */
@@ -79,14 +78,6 @@ public:
     */
 	  void save();
 
-    /* Get array of words function
-       ARGUMENTS:
-         None;
-       RETURNS:
-         (StringVector) array of words
-    */
-    StringVector getStorage();
-
     /* Load data from files with user's name function
        ARGUMENTS:
          None;
@@ -135,6 +126,13 @@ public:
     */
     int ChangeSettings(int SetID);
 
+    /* Take words with mistakes function
+       ARGUMENTS:
+         (int) count of requested words;
+       RETURNS:
+         (vector <Word>) vector of requested words;
+    */
+    vector<Word> GetMistakeWords(int count);
     //Не сделано
     StringVector getWords(int count);
 };
