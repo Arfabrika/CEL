@@ -1,6 +1,6 @@
 /* FILE NAME: main_header.h
  * PROGRAMMER: Fabrika Artem
- * DATE: 03.02.2021
+ * DATE: 02.03.2021
  * PERPOSE: main header project file
  */
 
@@ -8,7 +8,7 @@
 #define __MAIN_HEADER_H
 
 #define _CRT_SECURE_NO_WARNINGS
-#define MaxOutputWordSize 20    /* used in OutputArray */
+#define MaxOutputWordSize 30    /* used in OutputArray */
 #define NumOfTasks 6				    /* number of tasks for one word */
 
 #include <cstdio>

@@ -1,6 +1,6 @@
 /* FILE NAME: console.cpp
  * PROGRAMMER: Fabrika Artem
- * DATE: 04.02.2021
+ * DATE: 02.03.2021
  * PERPOSE: console functions file
  */
 
@@ -123,7 +123,7 @@ void console::OutputArray( void )
     cout << left << setw(MaxOutputWordSize) << "Слово" << setw(MaxOutputWordSize) << "Перевод" << "Количество проверок слова  Количество ошибок в слове  \n";
     for (int i = 0; i < mas.size(); i++)
         cout << setw(MaxOutputWordSize) << mas.at(i).Name << setw(MaxOutputWordSize + 13) << mas.at(i).Translate
-        << setw(28) << mas.at(i).NumOfUses << setw(28) << mas.at(i).NumOfWrongAnswers << "\n";
+        << setw(26) << mas.at(i).NumOfUses << setw(10) << mas.at(i).NumOfWrongAnswers << "\n";
 } /* End of 'OutputArray' function */
 
 /* Delete word from temporary array function

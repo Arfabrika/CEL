@@ -1,4 +1,5 @@
-xcvbnm,xcvbnm
-qwertyuiop,qwertyuiop
-qazwsx,qazwsx
-asdfghjkl,asdfghjkl
+xcvbnm`xcvbnm
+qwertyuiop`qwertyuiop
+qazwsx`qazwsx
+asdfghjkl`asdfghjkl
+qqqqqq`6ку
