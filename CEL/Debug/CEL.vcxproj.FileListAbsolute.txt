@@ -1,2 +1,0 @@
-C:\Users\Артем\source\repos\CEL\Debug\CEL.exe
-C:\Users\Артем\source\repos\CEL\Debug\CEL.pdb
